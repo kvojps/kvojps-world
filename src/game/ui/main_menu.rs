@@ -1,9 +1,10 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
 use bevy_egui::EguiContexts;
-use bevy_egui::egui::{self, Align, Color32, Layout, RichText, Vec2};
+use bevy_egui::egui::{self, Align, Layout, RichText, Vec2};
 
 use crate::game::states::AppScreen;
+use crate::game::ui::theme;
 
 // Plugin
 pub struct MainMenuPlugin;
@@ -106,7 +107,7 @@ fn _activate_selected_item(
 ) {
     match menu_state.selected_item() {
         MenuItem::NewGame => {
-            next_screen.set(AppScreen::Overworld);
+            next_screen.set(AppScreen::CharacterCreation);
         }
         MenuItem::LoadGame => {
             menu_state.hint =
@@ -125,23 +126,26 @@ fn _activate_selected_item(
 // UI
 fn animate_menu_background(time: Res<Time>, mut clear_color: ResMut<ClearColor>) {
     let t = time.elapsed_seconds();
-    let pulse = ((t * 0.35).sin() + 1.0) * 0.5;
-
-    let r = 0.03 + 0.02 * pulse;
-    let g = 0.02 + 0.015 * pulse;
-    let b = 0.06 + 0.03 * pulse;
-
-    clear_color.0 = Color::srgb(r, g, b);
+    let pulse = ((t * theme::MENU_BACKGROUND_SPEED).sin() + 1.0) * 0.5;
+    clear_color.0 = theme::ember_background(pulse);
 }
 
-fn draw_main_menu(mut egui_contexts: EguiContexts, menu_state: Res<MainMenuState>) {
+fn draw_main_menu(
+    mut egui_contexts: EguiContexts,
+    mut menu_state: ResMut<MainMenuState>,
+    mut next_screen: ResMut<NextState<AppScreen>>,
+    mut app_exit_events: EventWriter<AppExit>,
+) {
     let selected_item = menu_state.selected_item();
 
     egui::CentralPanel::default()
-        .frame(egui::Frame::none().fill(Color32::from_rgba_unmultiplied(5, 5, 10, 0)))
+        .frame(egui::Frame::none().fill(theme::surface_fill()))
         .show(egui_contexts.ctx_mut(), |ui| {
             _draw_menu_header(ui);
-            _draw_menu_options(ui, menu_state.selected);
+            if let Some(clicked_index) = _draw_menu_options(ui, menu_state.selected) {
+                menu_state.selected = clicked_index;
+                _activate_selected_item(&mut menu_state, &mut next_screen, &mut app_exit_events);
+            }
             _draw_menu_description(ui, selected_item, menu_state.hint.as_deref());
             _draw_menu_footer(ui);
         });
@@ -154,7 +158,7 @@ fn _draw_menu_header(ui: &mut egui::Ui) {
             RichText::new("Kvojps World")
                 .size(56.0)
                 .strong()
-                .color(Color32::from_rgb(224, 206, 145)),
+                .color(theme::title_gold()),
         );
 
         ui.add_space(4.0);
@@ -162,18 +166,20 @@ fn _draw_menu_header(ui: &mut egui::Ui) {
             RichText::new("Uma aventura RPG de sobrevivência e exploração")
                 .size(18.0)
                 .italics()
-                .color(Color32::from_rgb(152, 164, 189)),
+                .color(theme::subtitle_parchment()),
         );
     });
 }
 
-fn _draw_menu_options(ui: &mut egui::Ui, selected_index: usize) {
+fn _draw_menu_options(ui: &mut egui::Ui, selected_index: usize) -> Option<usize> {
+    let mut clicked_index = None;
+
     ui.add_space(50.0);
 
     ui.with_layout(Layout::top_down(Align::Center), |ui| {
         egui::Frame::none()
-            .fill(Color32::from_rgba_unmultiplied(12, 14, 24, 220))
-            .stroke(egui::Stroke::new(1.5, Color32::from_rgb(181, 153, 91)))
+            .fill(theme::panel_fill())
+            .stroke(egui::Stroke::new(1.8, theme::panel_stroke()))
             .rounding(egui::Rounding::same(10.0))
             .inner_margin(egui::Margin::same(18.0))
             .show(ui, |ui| {
@@ -183,25 +189,33 @@ fn _draw_menu_options(ui: &mut egui::Ui, selected_index: usize) {
                     let is_selected = index == selected_index;
 
                     let color = if is_selected {
-                        Color32::from_rgb(255, 225, 138)
+                        theme::selection_gold()
                     } else {
-                        Color32::from_rgb(196, 205, 224)
+                        theme::text_primary()
                     };
 
                     let marker = if is_selected { "  >" } else { "   " };
 
-                    ui.add_sized(
+                    let response = ui.add_sized(
                         Vec2::new(400.0, 38.0),
-                        egui::Label::new(
+                        egui::Button::new(
                             RichText::new(format!("{marker} {}", item.label()))
                                 .size(28.0)
                                 .color(color)
                                 .family(egui::FontFamily::Proportional),
-                        ),
+                        )
+                        .fill(theme::surface_fill())
+                        .stroke(egui::Stroke::NONE),
                     );
+
+                    if response.clicked() {
+                        clicked_index = Some(index);
+                    }
                 }
             });
     });
+
+    clicked_index
 }
 
 fn _draw_menu_description(ui: &mut egui::Ui, selected_item: MenuItem, hint: Option<&str>) {
@@ -210,7 +224,7 @@ fn _draw_menu_description(ui: &mut egui::Ui, selected_item: MenuItem, hint: Opti
         ui.label(
             RichText::new(selected_item.description())
                 .size(17.0)
-                .color(Color32::from_rgb(157, 179, 196)),
+                .color(theme::text_body()),
         );
 
         if let Some(hint_text) = hint {
@@ -218,7 +232,7 @@ fn _draw_menu_description(ui: &mut egui::Ui, selected_item: MenuItem, hint: Opti
             ui.label(
                 RichText::new(hint_text)
                     .size(15.0)
-                    .color(Color32::from_rgb(232, 172, 116)),
+                    .color(theme::accent_ember()),
             );
         }
     });
@@ -228,9 +242,9 @@ fn _draw_menu_footer(ui: &mut egui::Ui) {
     ui.with_layout(Layout::bottom_up(Align::Center), |ui| {
         ui.add_space(18.0);
         ui.label(
-            RichText::new("Use W/S ou setas para navegar | Enter para confirmar")
+            RichText::new("Use W/S ou setas para navegar | Enter ou clique para confirmar")
                 .size(14.0)
-                .color(Color32::from_rgb(122, 131, 157)),
+                .color(theme::text_muted()),
         );
     });
 }
