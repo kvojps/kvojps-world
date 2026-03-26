@@ -165,9 +165,9 @@ pub(super) fn sync_creation_ui(
 
     if let Ok(mut bg) = name_field_bg_query.get_single_mut() {
         bg.0 = if state.name_input_active {
-            Color::srgba_u8(94, 58, 36, 245)
+            theme::ui_name_input_active_background()
         } else {
-            Color::srgba_u8(18, 12, 8, 220)
+            theme::ui_name_input_background()
         };
     }
 

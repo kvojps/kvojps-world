@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::game::ui::theme;
+
 use super::components::{
     MainMenuActionButton, MainMenuDescriptionText, MainMenuHintText, MainMenuOptionLabel,
     MainMenuPanel, MainMenuUiRoot, MenuItem,
@@ -12,13 +14,13 @@ pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenu
     state.hint = None;
 
     let title_style = TextStyle {
-        font_size: 56.0,
-        color: Color::srgb_u8(236, 192, 112),
+        font_size: theme::FONT_SIZE_DISPLAY_TITLE,
+        color: theme::ui_title_text(),
         ..default()
     };
     let subtitle_style = TextStyle {
-        font_size: 18.0,
-        color: Color::srgb_u8(188, 160, 126),
+        font_size: theme::FONT_SIZE_LABEL,
+        color: theme::ui_subtitle_text(),
         ..default()
     };
 
@@ -85,8 +87,8 @@ fn _spawn_menu_panel(root: &mut ChildBuilder) {
                 margin: UiRect::top(Val::Px(24.0)),
                 ..default()
             },
-            background_color: BackgroundColor(Color::srgba_u8(36, 20, 12, 228)),
-            border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
+            background_color: BackgroundColor(theme::ui_panel_background()),
+            border_color: BorderColor(theme::ui_panel_border()),
             ..default()
         },
         MainMenuPanel,
@@ -104,7 +106,7 @@ fn _spawn_menu_panel(root: &mut ChildBuilder) {
                             padding: UiRect::left(Val::Px(10.0)),
                             ..default()
                         },
-                        background_color: BackgroundColor(Color::srgba_u8(18, 10, 6, 200)),
+                        background_color: BackgroundColor(theme::ui_button_background()),
                         border_color: BorderColor(Color::NONE),
                         ..default()
                     },
@@ -115,8 +117,8 @@ fn _spawn_menu_panel(root: &mut ChildBuilder) {
                         TextBundle::from_section(
                             item.label(),
                             TextStyle {
-                                font_size: 28.0,
-                                color: Color::srgb_u8(222, 196, 156),
+                                font_size: theme::FONT_SIZE_MENU_OPTION,
+                                color: theme::ui_label_text(),
                                 ..default()
                             },
                         ),
@@ -145,8 +147,8 @@ fn _spawn_description_area(root: &mut ChildBuilder) {
             TextBundle::from_section(
                 "",
                 TextStyle {
-                    font_size: 17.0,
-                    color: Color::srgb_u8(196, 170, 136),
+                    font_size: theme::FONT_SIZE_BODY,
+                    color: theme::ui_value_text(),
                     ..default()
                 },
             ),
@@ -157,8 +159,8 @@ fn _spawn_description_area(root: &mut ChildBuilder) {
             TextBundle::from_section(
                 "",
                 TextStyle {
-                    font_size: 15.0,
-                    color: Color::srgb_u8(236, 168, 104),
+                    font_size: theme::FONT_SIZE_HINT,
+                    color: theme::ui_hint_text(),
                     ..default()
                 },
             ),
@@ -184,8 +186,8 @@ fn _spawn_footer(root: &mut ChildBuilder) {
         footer.spawn(TextBundle::from_section(
             "Use W/S ou setas para navegar | Enter ou Espaco para confirmar",
             TextStyle {
-                font_size: 14.0,
-                color: Color::srgb_u8(152, 128, 102),
+                font_size: theme::FONT_SIZE_FOOTER,
+                color: theme::ui_muted_text(),
                 ..default()
             },
         ));

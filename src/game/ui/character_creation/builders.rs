@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::game::ui::theme;
+
 use super::components::{
     CharacterCreationUiRoot, ClassValueText, CreationActionsRow, CreationButtonAction,
     CreationContentRow, CreationPortraitCard, ErrorTextLabel, GenderValueText, NameInputButton,
@@ -26,23 +28,23 @@ pub(super) fn setup_character_creation(
     portraits.cleric = asset_server.load("portraits/clerico.png");
 
     let title_style = TextStyle {
-        font_size: 52.0,
-        color: Color::srgb_u8(236, 192, 112),
+        font_size: theme::FONT_SIZE_SCREEN_TITLE,
+        color: theme::ui_title_text(),
         ..default()
     };
     let subtitle_style = TextStyle {
-        font_size: 17.0,
-        color: Color::srgb_u8(188, 160, 126),
+        font_size: theme::FONT_SIZE_BODY,
+        color: theme::ui_subtitle_text(),
         ..default()
     };
     let label_style = TextStyle {
-        font_size: 18.0,
-        color: Color::srgb_u8(222, 196, 156),
+        font_size: theme::FONT_SIZE_LABEL,
+        color: theme::ui_label_text(),
         ..default()
     };
     let value_style = TextStyle {
-        font_size: 16.0,
-        color: Color::srgb_u8(196, 170, 136),
+        font_size: theme::FONT_SIZE_VALUE,
+        color: theme::ui_value_text(),
         ..default()
     };
 
@@ -122,8 +124,8 @@ fn _spawn_creation_card(
             flex_direction: FlexDirection::Column,
             ..default()
         },
-        background_color: BackgroundColor(Color::srgba_u8(36, 20, 12, 228)),
-        border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
+        background_color: BackgroundColor(theme::ui_panel_background()),
+        border_color: BorderColor(theme::ui_panel_border()),
         ..default()
     })
     .with_children(|card| {
@@ -202,8 +204,8 @@ fn _spawn_creation_form_column(
                 TextBundle::from_section(
                     "",
                     TextStyle {
-                        font_size: 14.0,
-                        color: Color::srgb_u8(240, 130, 110),
+                        font_size: theme::FONT_SIZE_FOOTER,
+                        color: theme::ui_error_text(),
                         ..default()
                     },
                 ),
@@ -225,8 +227,8 @@ fn _spawn_creation_name_input(left: &mut ChildBuilder, value_style: &TextStyle) 
                 align_items: AlignItems::Center,
                 ..default()
             },
-            background_color: BackgroundColor(Color::srgba_u8(18, 12, 8, 220)),
-            border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
+            background_color: BackgroundColor(theme::ui_name_input_background()),
+            border_color: BorderColor(theme::ui_panel_border()),
             ..default()
         },
         CreationButtonAction::NameInput,
@@ -250,8 +252,8 @@ fn _spawn_selector_row<T: Component>(
     parent.spawn(TextBundle::from_section(
         label,
         TextStyle {
-            font_size: 18.0,
-            color: Color::srgb_u8(222, 196, 156),
+            font_size: theme::FONT_SIZE_LABEL,
+            color: theme::ui_label_text(),
             ..default()
         },
     ));
@@ -277,7 +279,7 @@ fn _spawn_selector_row<T: Component>(
                         align_items: AlignItems::Center,
                         ..default()
                     },
-                    background_color: BackgroundColor(Color::srgba_u8(60, 38, 25, 230)),
+                    background_color: BackgroundColor(theme::ui_selector_button_background()),
                     ..default()
                 },
                 prev_action,
@@ -286,8 +288,8 @@ fn _spawn_selector_row<T: Component>(
                 button.spawn(TextBundle::from_section(
                     "<",
                     TextStyle {
-                        font_size: 18.0,
-                        color: Color::srgb_u8(222, 196, 156),
+                        font_size: theme::FONT_SIZE_LABEL,
+                        color: theme::ui_label_text(),
                         ..default()
                     },
                 ));
@@ -297,8 +299,8 @@ fn _spawn_selector_row<T: Component>(
                 TextBundle::from_section(
                     "",
                     TextStyle {
-                        font_size: 16.0,
-                        color: Color::srgb_u8(196, 170, 136),
+                        font_size: theme::FONT_SIZE_VALUE,
+                        color: theme::ui_value_text(),
                         ..default()
                     },
                 ),
@@ -314,7 +316,7 @@ fn _spawn_selector_row<T: Component>(
                         align_items: AlignItems::Center,
                         ..default()
                     },
-                    background_color: BackgroundColor(Color::srgba_u8(60, 38, 25, 230)),
+                    background_color: BackgroundColor(theme::ui_selector_button_background()),
                     ..default()
                 },
                 next_action,
@@ -323,8 +325,8 @@ fn _spawn_selector_row<T: Component>(
                 button.spawn(TextBundle::from_section(
                     ">",
                     TextStyle {
-                        font_size: 18.0,
-                        color: Color::srgb_u8(222, 196, 156),
+                        font_size: theme::FONT_SIZE_LABEL,
+                        color: theme::ui_label_text(),
                         ..default()
                     },
                 ));
@@ -374,7 +376,7 @@ fn _spawn_action_button(
                     align_items: AlignItems::Center,
                     ..default()
                 },
-                background_color: BackgroundColor(Color::srgba_u8(92, 56, 32, 240)),
+                background_color: BackgroundColor(theme::ui_action_button_background()),
                 ..default()
             },
             action,
@@ -383,8 +385,8 @@ fn _spawn_action_button(
             button.spawn(TextBundle::from_section(
                 label,
                 TextStyle {
-                    font_size: 15.0,
-                    color: Color::srgb_u8(222, 196, 156),
+                    font_size: theme::FONT_SIZE_HINT,
+                    color: theme::ui_label_text(),
                     ..default()
                 },
             ));
@@ -424,8 +426,8 @@ fn spawn_creation_portrait_column(
                         border: UiRect::all(Val::Px(2.0)),
                         ..default()
                     },
-                    background_color: BackgroundColor(Color::srgba_u8(18, 10, 6, 170)),
-                    border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
+                    background_color: BackgroundColor(theme::ui_portrait_frame_background()),
+                    border_color: BorderColor(theme::ui_panel_border()),
                     ..default()
                 })
                 .with_children(|frame| {
@@ -447,8 +449,8 @@ fn spawn_creation_portrait_column(
                 TextBundle::from_section(
                     "",
                     TextStyle {
-                        font_size: 17.0,
-                        color: Color::srgb_u8(252, 204, 118),
+                        font_size: theme::FONT_SIZE_BODY,
+                        color: theme::ui_selected_text(),
                         ..default()
                     },
                 ),
@@ -459,8 +461,8 @@ fn spawn_creation_portrait_column(
                 TextBundle::from_section(
                     "",
                     TextStyle {
-                        font_size: 13.0,
-                        color: Color::srgb_u8(152, 128, 102),
+                        font_size: theme::FONT_SIZE_STATUS,
+                        color: theme::ui_muted_text(),
                         ..default()
                     },
                 ),
@@ -474,8 +476,8 @@ fn _spawn_creation_footer(root: &mut ChildBuilder) {
     root.spawn(TextBundle::from_section(
         "ESC para voltar ao menu principal",
         TextStyle {
-            font_size: 14.0,
-            color: Color::srgb_u8(152, 128, 102),
+            font_size: theme::FONT_SIZE_FOOTER,
+            color: theme::ui_muted_text(),
             ..default()
         },
     ));

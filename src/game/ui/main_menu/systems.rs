@@ -76,16 +76,16 @@ pub(super) fn sync_main_menu_ui(
 
         text.sections[0].value = format!("{marker} {}", label.0.label());
         text.sections[0].style.color = if is_selected {
-            Color::srgb_u8(252, 204, 118)
+            theme::ui_selected_text()
         } else {
-            Color::srgb_u8(222, 196, 156)
+            theme::ui_label_text()
         };
 
         if let Ok(mut background) = button_bg_query.get_mut(parent.get()) {
             background.0 = if is_selected {
-                Color::srgba_u8(74, 44, 26, 230)
+                theme::ui_button_selected_background()
             } else {
-                Color::srgba_u8(18, 10, 6, 200)
+                theme::ui_button_background()
             };
         }
     }
