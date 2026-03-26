@@ -1,0 +1,11 @@
+Guerreiro:
+Retrato de personagem RPG medieval fantasy, classe Guerreiro, meio-corpo, olhando para frente com expressão determinada, armadura de aço escovado com detalhes em couro escuro e ouro envelhecido, capa curta gasta, espada longa parcialmente visível, cicatriz discreta no rosto, iluminação quente de tocha vindo da esquerda, rim light suave, fundo escuro desfocado de fortaleza antiga, estilo digital painting semi-realista, alta qualidade, foco no rosto, composição central, portrait art for character selection screen, 4:5
+
+Ranger:
+Retrato de personagem RPG medieval fantasy, classe Ranger, meio-corpo, postura ágil e vigilante, capuz de couro, manto verde-musgo com tons terrosos, arco de madeira nobre visível no enquadramento, aljava com flechas artesanais, acessórios de caça e sobrevivência, luz dourada de fim de tarde filtrada, contraste suave, fundo escuro de floresta antiga desfocada, estilo digital painting semi-realista, alta qualidade, foco no olhar, composição central, portrait art for character selection screen, 4:5
+
+Mago:
+Retrato de personagem RPG medieval fantasy, classe Mago, meio-corpo, expressão sábia e intensa, vestes arcanas em azul profundo e bronze envelhecido, runas brilhando sutilmente ao redor da mão, cajado ornamentado parcialmente visível, partículas mágicas discretas, iluminação quente frontal com brilho arcano frio secundário, fundo escuro de biblioteca arcana desfocada, estilo digital painting semi-realista, alta qualidade, foco no rosto e mãos, composição central, portrait art for character selection screen, 4:5
+
+Clérigo:
+Retrato de personagem RPG medieval fantasy, classe Clérigo, meio-corpo, presença serena e firme, vestes cerimoniais em creme, dourado e vinho, símbolo sagrado no peito, maça ou cetro ritual parcialmente visível, ornamentos religiosos antigos, iluminação dourada suave tipo vitral com halo discreto, fundo escuro de templo antigo desfocado, estilo digital painting semi-realista, alta qualidade, foco no rosto, composição central, portrait art for character selection screen, 4:5
