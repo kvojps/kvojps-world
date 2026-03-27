@@ -8,11 +8,13 @@ mod state;
 mod systems;
 
 use builders::{cleanup_character_creation_ui, setup_character_creation};
-use state::{CharacterCreationState, CharacterPortraitCatalog};
+use state::CharacterPortraitCatalog;
 use systems::{
     animate_creation_background, handle_creation_button_interactions, handle_creation_input,
     handle_creation_text_input, sync_creation_ui, update_creation_layout,
 };
+
+pub use state::CharacterCreationState;
 
 pub struct CharacterCreationPlugin;
 
