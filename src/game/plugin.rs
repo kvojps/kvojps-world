@@ -3,7 +3,7 @@ use bevy::prelude::*;
 
 use crate::game::states::AppScreen;
 use crate::game::ui::character_creation::CharacterCreationPlugin;
-use crate::game::ui::main_menu::MainMenuPlugin;
+use crate::game::main_menu::MainMenuPlugin;
 use crate::game::world::overworld::OverworldPlugin;
 
 pub struct GamePlugin;

@@ -1,5 +1,6 @@
 mod components;
 mod states;
+mod styles;
 mod views;
 use crate::game::states::AppScreen;
 use bevy::prelude::*;
