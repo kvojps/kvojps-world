@@ -22,3 +22,34 @@ pub(super) fn header_container_style() -> Style {
         ..default()
     }
 }
+
+pub(super) fn menu_panel_container_style() -> Style {
+    Style {
+        width: Val::Px(460.0),
+        max_width: Val::Percent(100.0),
+        padding: UiRect::all(Val::Px(18.0)),
+        border: UiRect::all(Val::Px(2.0)),
+        flex_direction: FlexDirection::Column,
+        row_gap: Val::Px(8.0),
+        margin: UiRect::top(Val::Px(24.0)),
+        ..default()
+    }
+}
+
+pub(super) fn menu_item_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        height: Val::Px(42.0),
+        justify_content: JustifyContent::FlexStart,
+        align_items: AlignItems::Center,
+        padding: UiRect::left(Val::Px(10.0)),
+        ..default()
+    }
+}
+
+pub(super) fn menu_item_colors() -> (BackgroundColor, BorderColor) {
+    (
+        BackgroundColor(Color::srgb_u8(150, 106, 64)),
+        BorderColor(Color::NONE),
+    )
+}

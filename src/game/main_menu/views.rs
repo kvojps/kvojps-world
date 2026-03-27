@@ -1,5 +1,5 @@
-use super::components::MainMenuUiRoot;
-use super::styles::{header_container_style, root_container_style};
+use super::components::*;
+use super::styles::*;
 use crate::themes::*;
 use bevy::prelude::*;
 
@@ -14,26 +14,44 @@ pub(super) fn setup_main_menu(mut commands: Commands) {
         ))
         .with_children(|root| {
             _spawn_header(root);
+            _spawn_menu_panel(root);
         });
 }
 
 fn _spawn_header(root: &mut ChildBuilder) {
-    let title_style = title_style();
-    let subtitle_style = subtitle_style();
-
     root.spawn(NodeBundle {
         style: header_container_style(),
         ..default()
     })
     .with_children(|header| {
-        header.spawn(TextBundle::from_section(
-            "Kvojps World",
-            title_style.clone(),
-        ));
+        header.spawn(TextBundle::from_section("Kvojps World", title_style()));
         header.spawn(TextBundle::from_section(
             "Uma aventura RPG de sobrevivência e exploracão",
-            subtitle_style.clone(),
+            subtitle_style(),
         ));
+    });
+}
+
+fn _spawn_menu_panel(root: &mut ChildBuilder) {
+    root.spawn((
+        NodeBundle {
+            style: menu_panel_container_style(),
+            ..default()
+        },
+        MainMenuPanel,
+    ))
+    .with_children(|panel| {
+        for item in MenuItem::ALL {
+            panel.spawn((
+                ButtonBundle {
+                    style: menu_item_style(),
+                    background_color: menu_item_colors().0,
+                    border_color: menu_item_colors().1,
+                    ..default()
+                },
+                MenuItemActionButton(item),
+            ));
+        }
     });
 }
 
