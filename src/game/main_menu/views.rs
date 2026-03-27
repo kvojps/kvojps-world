@@ -1,9 +1,12 @@
 use super::components::*;
+use super::states::MainMenuState;
 use super::styles::*;
 use crate::themes::*;
 use bevy::prelude::*;
 
-pub(super) fn setup_main_menu(mut commands: Commands) {
+pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenuState>) {
+    state.selected = 0;
+
     commands
         .spawn((
             NodeBundle {

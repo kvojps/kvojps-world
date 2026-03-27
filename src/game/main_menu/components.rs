@@ -17,6 +17,15 @@ pub(super) enum MenuItem {
 impl MenuItem {
     pub(super) const ALL: [Self; 4] = [Self::NewGame, Self::LoadGame, Self::Options, Self::Quit];
 
+    pub(super) fn index(self) -> usize {
+        match self {
+            Self::NewGame => 0,
+            Self::LoadGame => 1,
+            Self::Options => 2,
+            Self::Quit => 3,
+        }
+    }
+
     pub(super) fn label(self) -> &'static str {
         match self {
             Self::NewGame => "Novo Jogo",
