@@ -1,4 +1,5 @@
 mod app;
+mod gameplay;
 mod plugin;
 mod states;
 mod ui;
