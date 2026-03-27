@@ -42,15 +42,22 @@ fn _spawn_menu_panel(root: &mut ChildBuilder) {
     ))
     .with_children(|panel| {
         for item in MenuItem::ALL {
-            panel.spawn((
-                ButtonBundle {
-                    style: menu_item_style(),
-                    background_color: menu_item_colors().0,
-                    border_color: menu_item_colors().1,
-                    ..default()
-                },
-                MenuItemActionButton(item),
-            ));
+            panel
+                .spawn((
+                    ButtonBundle {
+                        style: menu_item_style(),
+                        background_color: menu_item_colors().0,
+                        border_color: menu_item_colors().1,
+                        ..default()
+                    },
+                    MenuItemActionButton(item),
+                ))
+                .with_children(|button| {
+                    button.spawn((
+                        TextBundle::from_section(item.label(), menu_item_label_style()),
+                        MenuItemLabel(item),
+                    ));
+                });
         }
     });
 }

@@ -53,3 +53,11 @@ pub(super) fn menu_item_colors() -> (BackgroundColor, BorderColor) {
         BorderColor(Color::NONE),
     )
 }
+
+pub(super) fn menu_item_label_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}

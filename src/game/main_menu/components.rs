@@ -21,7 +21,7 @@ impl MenuItem {
         match self {
             Self::NewGame => "Novo Jogo",
             Self::LoadGame => "Carregar Jornada",
-            Self::Options => "Opcoes",
+            Self::Options => "Opções",
             Self::Quit => "Sair",
         }
     }
@@ -29,3 +29,6 @@ impl MenuItem {
 
 #[derive(Component, Clone, Copy)]
 pub(super) struct MenuItemActionButton(pub MenuItem);
+
+#[derive(Component, Clone, Copy)]
+pub(super) struct MenuItemLabel(pub MenuItem);
