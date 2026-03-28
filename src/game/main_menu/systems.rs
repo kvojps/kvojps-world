@@ -31,3 +31,15 @@ pub(super) fn sync_main_menu_ui(
         }
     }
 }
+
+pub(super) fn handle_menu_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mut state: ResMut<MainMenuState>,
+) {
+    if keyboard.just_pressed(KeyCode::ArrowUp) || keyboard.just_pressed(KeyCode::KeyW) {
+        state.select_previous();
+    }
+    if keyboard.just_pressed(KeyCode::ArrowDown) || keyboard.just_pressed(KeyCode::KeyS) {
+        state.select_next();
+    }
+}

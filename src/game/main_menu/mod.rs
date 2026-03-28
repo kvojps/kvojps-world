@@ -17,7 +17,8 @@ impl Plugin for MainMenuPlugin {
             .add_systems(OnExit(AppScreen::MainMenu), cleanup_main_menu)
             .add_systems(
                 Update,
-                (systems::sync_main_menu_ui,).run_if(in_state(AppScreen::MainMenu)),
+                (systems::sync_main_menu_ui, systems::handle_menu_input)
+                    .run_if(in_state(AppScreen::MainMenu)),
             );
     }
 }
