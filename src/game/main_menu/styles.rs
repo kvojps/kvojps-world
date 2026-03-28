@@ -1,5 +1,9 @@
 use bevy::prelude::*;
 
+pub fn ember_background() -> BackgroundColor {
+    BackgroundColor(Color::srgb(0.06, 0.03, 0.02))
+}
+
 pub(super) fn root_container_style() -> Style {
     Style {
         width: Val::Percent(100.0),

@@ -11,6 +11,7 @@ pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenu
         .spawn((
             NodeBundle {
                 style: root_container_style(),
+                background_color: ember_background(),
                 ..default()
             },
             MainMenuUiRoot,
