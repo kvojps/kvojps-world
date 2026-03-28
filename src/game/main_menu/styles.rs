@@ -61,3 +61,19 @@ pub(super) fn menu_item_label_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn menu_item_selected_color() -> Color {
+    Color::srgb_u8(252, 204, 118)
+}
+
+pub(super) fn menu_item_color() -> Color {
+    Color::srgb_u8(222, 196, 156)
+}
+
+pub(super) fn menu_item_selected_bg_color() -> Color {
+    Color::srgba_u8(74, 44, 26, 230)
+}
+
+pub(super) fn menu_item_bg_color() -> Color {
+    Color::srgba_u8(18, 10, 6, 200)
+}
