@@ -19,6 +19,7 @@ pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenu
         .with_children(|root| {
             _spawn_header(root);
             _spawn_menu_panel(root);
+            _spawn_description_area(root);
         });
 }
 
@@ -63,6 +64,30 @@ fn _spawn_menu_panel(root: &mut ChildBuilder) {
                     ));
                 });
         }
+    });
+}
+
+fn _spawn_description_area(root: &mut ChildBuilder) {
+    root.spawn(NodeBundle {
+        style: menu_item_desc_container_style(),
+        ..default()
+    })
+    .with_children(|description| {
+        description.spawn((
+            TextBundle::from_section("", menu_item_desc_text_style()),
+            MenuItemDescriptionText,
+        ));
+        // description.spawn((
+        //     TextBundle::from_section(
+        //         "",
+        //         TextStyle {
+        //             font_size: theme::FONT_SIZE_HINT,
+        //             color: theme::ui_hint_text(),
+        //             ..default()
+        //         },
+        //     ),
+        //     MainMenuHintText,
+        // ));
     });
 }
 

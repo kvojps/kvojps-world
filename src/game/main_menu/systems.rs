@@ -1,4 +1,4 @@
-use crate::game::main_menu::components::MenuItemLabel;
+use crate::game::main_menu::components::{MenuItemDescriptionText, MenuItemLabel};
 
 use super::states::MainMenuState;
 use super::styles::*;
@@ -6,12 +6,19 @@ use bevy::prelude::*;
 
 pub(super) fn sync_main_menu_ui(
     state: Res<MainMenuState>,
-    mut text_query: Query<(&MenuItemLabel, &mut Text, &Parent)>,
+    mut text_queries: ParamSet<(
+        Query<
+            (&MenuItemLabel, &mut Text, &Parent),
+            (With<MenuItemLabel>, Without<MenuItemDescriptionText>),
+        >,
+        Query<&mut Text, With<MenuItemDescriptionText>>,
+        // Query<&mut Text, With<MainMenuHintText>>,
+    )>,
     mut button_bg_query: Query<&mut BackgroundColor, With<Button>>,
 ) {
     let selected = state.selected_item();
 
-    for (label, mut text, parent) in &mut text_query {
+    for (label, mut text, parent) in &mut text_queries.p0() {
         let is_selected = label.0 == selected;
         let marker = if is_selected { ">" } else { " " };
 
@@ -29,6 +36,10 @@ pub(super) fn sync_main_menu_ui(
                 menu_item_bg_color()
             }
         }
+    }
+
+    if let Ok(mut description) = text_queries.p1().get_single_mut() {
+        description.sections[0].value = selected.description().to_string();
     }
 }
 

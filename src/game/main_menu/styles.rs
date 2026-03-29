@@ -81,3 +81,23 @@ pub(super) fn menu_item_selected_bg_color() -> Color {
 pub(super) fn menu_item_bg_color() -> Color {
     Color::srgba_u8(18, 10, 6, 200)
 }
+
+pub(super) fn menu_item_desc_container_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        max_width: Val::Px(840.0),
+        flex_direction: FlexDirection::Column,
+        align_items: AlignItems::Center,
+        row_gap: Val::Px(8.0),
+        margin: UiRect::top(Val::Px(8.0)),
+        ..default()
+    }
+}
+
+pub(super) fn menu_item_desc_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 17.0,
+        color: Color::srgb_u8(196, 170, 136),
+        ..default()
+    }
+}

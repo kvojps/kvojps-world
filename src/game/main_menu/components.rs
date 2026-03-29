@@ -34,6 +34,15 @@ impl MenuItem {
             Self::Quit => "Sair",
         }
     }
+
+    pub(super) fn description(self) -> &'static str {
+        match self {
+            Self::NewGame => "Inicie uma nova aventura no reino de Kvojps.",
+            Self::LoadGame => "Retome a jornada a partir do último acampamento.",
+            Self::Options => "Ajuste áudio, controles e preferências visuais.",
+            Self::Quit => "Fechar o jogo e voltar ao desktop.",
+        }
+    }
 }
 
 #[derive(Component, Clone, Copy)]
@@ -41,3 +50,6 @@ pub(super) struct MenuItemActionButton(pub MenuItem);
 
 #[derive(Component, Clone, Copy)]
 pub(super) struct MenuItemLabel(pub MenuItem);
+
+#[derive(Component)]
+pub(super) struct MenuItemDescriptionText;
