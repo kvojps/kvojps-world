@@ -75,7 +75,7 @@ fn _spawn_description_area(root: &mut ChildBuilder) {
     .with_children(|description| {
         description.spawn((
             TextBundle::from_section("", menu_item_desc_text_style()),
-            MenuItemDescriptionText,
+            MenuItemDescription,
         ));
         // description.spawn((
         //     TextBundle::from_section(

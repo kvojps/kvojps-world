@@ -52,4 +52,4 @@ pub(super) struct MenuItemActionButton(pub MenuItem);
 pub(super) struct MenuItemLabel(pub MenuItem);
 
 #[derive(Component)]
-pub(super) struct MenuItemDescriptionText;
+pub(super) struct MenuItemDescription;

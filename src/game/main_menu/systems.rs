@@ -1,4 +1,4 @@
-use crate::game::main_menu::components::{MenuItemDescriptionText, MenuItemLabel};
+use crate::game::main_menu::components::{MenuItemDescription, MenuItemLabel};
 
 use super::states::MainMenuState;
 use super::styles::*;
@@ -9,9 +9,9 @@ pub(super) fn sync_main_menu_ui(
     mut text_queries: ParamSet<(
         Query<
             (&MenuItemLabel, &mut Text, &Parent),
-            (With<MenuItemLabel>, Without<MenuItemDescriptionText>),
+            (With<MenuItemLabel>, Without<MenuItemDescription>),
         >,
-        Query<&mut Text, With<MenuItemDescriptionText>>,
+        Query<&mut Text, With<MenuItemDescription>>,
         // Query<&mut Text, With<MainMenuHintText>>,
     )>,
     mut button_bg_query: Query<&mut BackgroundColor, With<Button>>,
