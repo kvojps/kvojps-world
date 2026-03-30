@@ -28,3 +28,23 @@ pub(super) fn subtitle_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn character_creation_area_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        max_width: Val::Px(940.0),
+        min_width: Val::Px(320.0),
+        padding: UiRect::all(Val::Px(22.0)),
+        border: UiRect::all(Val::Px(2.0)),
+        flex_direction: FlexDirection::Column,
+        ..default()
+    }
+}
+
+pub(super) fn character_creation_area_bg_color() -> BackgroundColor {
+    BackgroundColor(Color::srgba_u8(36, 20, 12, 228))
+}
+
+pub(super) fn character_creation_area_border_color() -> BorderColor {
+    BorderColor(Color::srgb_u8(150, 106, 64))
+}
