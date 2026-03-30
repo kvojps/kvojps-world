@@ -51,7 +51,8 @@ pub(super) fn sync_main_menu_ui(
     }
 }
 
-pub(super) fn handle_menu_button_interactions(
+pub(super) fn handle_menu_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
     mut interactions: Query<
         (&Interaction, &MenuItemActionButton),
         (Changed<Interaction>, With<Button>),
@@ -60,20 +61,38 @@ pub(super) fn handle_menu_button_interactions(
     mut next_screen: ResMut<NextState<AppScreen>>,
     mut app_exit_events: EventWriter<AppExit>,
 ) {
+    if keyboard.just_pressed(KeyCode::ArrowUp) || keyboard.just_pressed(KeyCode::KeyW) {
+        state.select_previous();
+        state.hint = None;
+    }
+    if keyboard.just_pressed(KeyCode::ArrowDown) || keyboard.just_pressed(KeyCode::KeyS) {
+        state.select_next();
+        state.hint = None;
+    }
+    if keyboard.just_pressed(KeyCode::Enter) || keyboard.just_pressed(KeyCode::Space) {
+        let selected_item = state.selected_item();
+        activate_item(
+            selected_item,
+            &mut state,
+            &mut next_screen,
+            &mut app_exit_events,
+        );
+    }
+
     for (interaction, action) in &mut interactions {
         if *interaction != Interaction::Pressed {
             continue;
         }
 
         state.select_item(action.0);
-        _activate_item(action.0, &mut state, &mut next_screen, &mut app_exit_events);
+        activate_item(action.0, &mut state, &mut next_screen, &mut app_exit_events);
     }
 }
 
-fn _activate_item(
+fn activate_item(
     item: MenuItem,
     state: &mut MainMenuState,
-    next_screen: &mut NextState<AppScreen>,
+    _next_screen: &mut NextState<AppScreen>,
     app_exit_events: &mut EventWriter<AppExit>,
 ) {
     match item {
@@ -83,36 +102,13 @@ fn _activate_item(
             // next_screen.set(AppScreen::CharacterCreation);
         }
         MenuItem::LoadGame => {
-            state.hint = Some("Sistema de save/load sera adicionado na proxima etapa.".to_string());
+            state.hint = Some("Sistema de save/load será adicionado na próxima etapa.".to_string());
         }
         MenuItem::Options => {
-            state.hint = Some("Menu de opcoes sera implementado apos o gameplay base.".to_string());
+            state.hint = Some("Menu de opções será implementado após o gameplay base.".to_string());
         }
         MenuItem::Quit => {
             app_exit_events.send(AppExit::Success);
         }
-    }
-}
-
-pub(super) fn handle_menu_input(
-    keyboard: Res<ButtonInput<KeyCode>>,
-    mut state: ResMut<MainMenuState>,
-    mut next_screen: ResMut<NextState<AppScreen>>,
-    mut app_exit_events: EventWriter<AppExit>,
-) {
-    if keyboard.just_pressed(KeyCode::ArrowUp) || keyboard.just_pressed(KeyCode::KeyW) {
-        state.select_previous();
-    }
-    if keyboard.just_pressed(KeyCode::ArrowDown) || keyboard.just_pressed(KeyCode::KeyS) {
-        state.select_next();
-    }
-    if keyboard.just_pressed(KeyCode::Enter) || keyboard.just_pressed(KeyCode::Space) {
-        let selected_item = state.selected_item();
-        _activate_item(
-            selected_item,
-            &mut state,
-            &mut next_screen,
-            &mut app_exit_events,
-        );
     }
 }
