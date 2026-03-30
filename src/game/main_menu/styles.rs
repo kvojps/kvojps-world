@@ -101,3 +101,11 @@ pub(super) fn menu_item_desc_text_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn menu_item_hint_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 15.0,
+        color: Color::srgb_u8(236, 168, 104),
+        ..default()
+    }
+}

@@ -77,17 +77,10 @@ fn _spawn_description_area(root: &mut ChildBuilder) {
             TextBundle::from_section("", menu_item_desc_text_style()),
             MenuItemDescription,
         ));
-        // description.spawn((
-        //     TextBundle::from_section(
-        //         "",
-        //         TextStyle {
-        //             font_size: theme::FONT_SIZE_HINT,
-        //             color: theme::ui_hint_text(),
-        //             ..default()
-        //         },
-        //     ),
-        //     MainMenuHintText,
-        // ));
+        description.spawn((
+            TextBundle::from_section("", menu_item_hint_text_style()),
+            MenuItemHint,
+        ));
     });
 }
 

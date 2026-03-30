@@ -53,3 +53,6 @@ pub(super) struct MenuItemLabel(pub MenuItem);
 
 #[derive(Component)]
 pub(super) struct MenuItemDescription;
+
+#[derive(Component)]
+pub(super) struct MenuItemHint;
