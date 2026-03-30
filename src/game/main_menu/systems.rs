@@ -97,9 +97,8 @@ fn _activate_item(
 ) {
     match item {
         MenuItem::NewGame => {
-            state.hint = Some("Desenvolvimento da gameplay base em andamento.".to_string())
-            // state.hint = None;
-            // next_screen.set(AppScreen::CharacterCreation);
+            state.hint = None;
+            _next_screen.set(AppScreen::CharacterCreation);
         }
         MenuItem::LoadGame => {
             state.hint = Some("Sistema de save/load será adicionado na próxima etapa.".to_string());
