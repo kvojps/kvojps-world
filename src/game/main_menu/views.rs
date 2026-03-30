@@ -20,6 +20,7 @@ pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenu
             _spawn_header(root);
             _spawn_menu_panel(root);
             _spawn_description_area(root);
+            _spawn_footer(root);
         });
 }
 
@@ -80,6 +81,19 @@ fn _spawn_description_area(root: &mut ChildBuilder) {
         description.spawn((
             TextBundle::from_section("", menu_item_hint_text_style()),
             MenuItemHint,
+        ));
+    });
+}
+
+fn _spawn_footer(root: &mut ChildBuilder) {
+    root.spawn(NodeBundle {
+        style: footer_container_style(),
+        ..default()
+    })
+    .with_children(|footer| {
+        footer.spawn(TextBundle::from_section(
+            "Use W/S ou setas para navegar | Enter ou Espaco para confirmar",
+            footer_text_style(),
         ));
     });
 }

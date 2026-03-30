@@ -109,3 +109,22 @@ pub(super) fn menu_item_hint_text_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn footer_container_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        flex_grow: 1.0,
+        justify_content: JustifyContent::FlexEnd,
+        align_items: AlignItems::Center,
+        padding: UiRect::bottom(Val::Px(12.0)),
+        ..default()
+    }
+}
+
+pub(super) fn footer_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 14.0,
+        color: Color::srgb_u8(152, 128, 102),
+        ..default()
+    }
+}
