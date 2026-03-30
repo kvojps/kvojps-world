@@ -71,7 +71,7 @@ pub(super) fn handle_menu_input(
     }
     if keyboard.just_pressed(KeyCode::Enter) || keyboard.just_pressed(KeyCode::Space) {
         let selected_item = state.selected_item();
-        activate_item(
+        _activate_item(
             selected_item,
             &mut state,
             &mut next_screen,
@@ -85,11 +85,11 @@ pub(super) fn handle_menu_input(
         }
 
         state.select_item(action.0);
-        activate_item(action.0, &mut state, &mut next_screen, &mut app_exit_events);
+        _activate_item(action.0, &mut state, &mut next_screen, &mut app_exit_events);
     }
 }
 
-fn activate_item(
+fn _activate_item(
     item: MenuItem,
     state: &mut MainMenuState,
     _next_screen: &mut NextState<AppScreen>,
