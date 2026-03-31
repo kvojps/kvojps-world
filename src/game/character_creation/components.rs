@@ -4,6 +4,7 @@ use bevy::prelude::*;
 pub(super) struct CharacterCreationUiRoot;
 
 pub(super) const CHARACTER_GENDERS: [&str; 2] = ["Masculino", "Feminino"];
+pub(super) const CHARACTER_CLASSES: [&str; 4] = ["Guerreiro", "Ranger", "Mago", "Clérigo"];
 #[derive(Component, Clone, Copy)]
 pub(super) enum CreationButtonAction {
     // Back,
@@ -11,8 +12,8 @@ pub(super) enum CreationButtonAction {
     NameInput,
     GenderPrev,
     GenderNext,
-    // ClassPrev,
-    // ClassNext,
+    ClassPrev,
+    ClassNext,
 }
 
 #[derive(Component)]
@@ -23,3 +24,6 @@ pub(super) struct NameInputValue;
 
 #[derive(Component)]
 pub(super) struct GenderInputValue;
+
+#[derive(Component)]
+pub(super) struct ClassInputValue;

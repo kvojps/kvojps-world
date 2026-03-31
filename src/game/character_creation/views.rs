@@ -10,6 +10,7 @@ pub(super) fn setup_character_creation(
     asset_server: Res<AssetServer>,
 ) {
     state.selected_gender = 0;
+    state.selected_class = 0;
     state.error_text = None;
     state.name_input_active = false;
 
@@ -91,13 +92,13 @@ fn _spawn_creation_form_column(creation_area: &mut ChildBuilder) {
                 CreationButtonAction::GenderNext,
                 GenderInputValue,
             );
-            // _spawn_selector_row(
-            //     left,
-            //     "Classe",
-            //     CreationButtonAction::GenderPrev, //TODO: ClassPrev
-            //     CreationButtonAction::GenderNext, //TODO: ClassNext
-            //     GenderInputValue,                 //TODO: ClassValueText
-            // );
+            _spawn_selector_row(
+                left,
+                "Classe",
+                CreationButtonAction::ClassPrev,
+                CreationButtonAction::ClassNext,
+                ClassInputValue,
+            );
 
             _spawn_creation_actions(left);
         });

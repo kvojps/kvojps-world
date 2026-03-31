@@ -12,6 +12,7 @@ pub(super) fn sync_character_creation_ui(
     mut text_queries: ParamSet<(
         Query<&mut Text, With<NameInputValue>>,
         Query<&mut Text, With<GenderInputValue>>,
+        Query<&mut Text, With<ClassInputValue>>,
     )>,
     mut name_field_bg_query: Query<&mut BackgroundColor, With<NameInputButton>>,
 ) {
@@ -42,6 +43,10 @@ pub(super) fn sync_character_creation_ui(
     if let Ok(mut text) = text_queries.p1().get_single_mut() {
         text.sections[0].value = CHARACTER_GENDERS[state.selected_gender].to_string();
     }
+
+    if let Ok(mut text) = text_queries.p2().get_single_mut() {
+        text.sections[0].value = CHARACTER_CLASSES[state.selected_class].to_string();
+    }
 }
 
 pub(super) fn handle_character_creation_interactions(
@@ -71,6 +76,18 @@ pub(super) fn handle_character_creation_interactions(
             CreationButtonAction::GenderNext => {
                 state.name_input_active = false;
                 state.selected_gender = (state.selected_gender + 1) % CHARACTER_GENDERS.len();
+            }
+            CreationButtonAction::ClassPrev => {
+                state.name_input_active = false;
+                state.selected_class = if state.selected_class == 0 {
+                    CHARACTER_CLASSES.len() - 1
+                } else {
+                    state.selected_class - 1
+                };
+            }
+            CreationButtonAction::ClassNext => {
+                state.name_input_active = false;
+                state.selected_class = (state.selected_class + 1) % CHARACTER_CLASSES.len();
             }
         }
     }
