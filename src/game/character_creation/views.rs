@@ -1,8 +1,18 @@
 use super::components::*;
+use super::states::*;
 use super::styles::*;
 use bevy::prelude::*;
 
-pub(super) fn setup_character_creation(mut commands: Commands) {
+pub(super) fn setup_character_creation(
+    mut commands: Commands,
+    mut portraits: ResMut<CharacterPortraitCatalog>,
+    asset_server: Res<AssetServer>,
+) {
+    portraits.warrior = asset_server.load("portraits/warrior.png");
+    portraits.ranger = asset_server.load("portraits/ranger.png");
+    portraits.mage = asset_server.load("portraits/mage.png");
+    portraits.cleric = asset_server.load("portraits/clerico.png");
+
     commands
         .spawn((
             NodeBundle {
@@ -13,7 +23,7 @@ pub(super) fn setup_character_creation(mut commands: Commands) {
         ))
         .with_children(|root| {
             _spawn_creation_header(root);
-            _spawn_character_creation_area(root);
+            _spawn_character_creation_area(root, &portraits);
         });
 }
 
@@ -25,7 +35,7 @@ fn _spawn_creation_header(root: &mut ChildBuilder) {
     ));
 }
 
-fn _spawn_character_creation_area(root: &mut ChildBuilder) {
+fn _spawn_character_creation_area(root: &mut ChildBuilder, portraits: &CharacterPortraitCatalog) {
     root.spawn(NodeBundle {
         style: character_creation_area_style(),
         background_color: character_creation_area_bg_color(),
@@ -33,11 +43,14 @@ fn _spawn_character_creation_area(root: &mut ChildBuilder) {
         ..default()
     })
     .with_children(|area| {
-        _spawn_character_creation_area_row(area);
+        _spawn_character_creation_area_row(area, portraits);
     });
 }
 
-fn _spawn_character_creation_area_row(creation_area: &mut ChildBuilder) {
+fn _spawn_character_creation_area_row(
+    creation_area: &mut ChildBuilder,
+    portraits: &CharacterPortraitCatalog,
+) {
     creation_area
         .spawn((
             NodeBundle {
@@ -48,7 +61,7 @@ fn _spawn_character_creation_area_row(creation_area: &mut ChildBuilder) {
         ))
         .with_children(|content| {
             _spawn_creation_form_column(content);
-            // spawn_creation_portrait_column(content);
+            _spawn_creation_portrait_column(content, portraits);
         });
 }
 
@@ -167,6 +180,89 @@ fn _spawn_action_button(parent: &mut ChildBuilder, label: &str) {
         ))
         .with_children(|button| {
             button.spawn(TextBundle::from_section(label, action_button_text_style()));
+        });
+}
+
+fn _spawn_creation_portrait_column(
+    content: &mut ChildBuilder,
+    portraits: &CharacterPortraitCatalog,
+) {
+    content
+        .spawn((
+            NodeBundle {
+                style: Style {
+                    width: Val::Px(260.0),
+                    flex_direction: FlexDirection::Column,
+                    align_items: AlignItems::Center,
+                    row_gap: Val::Px(8.0),
+                    ..default()
+                },
+                ..default()
+            },
+            // CreationPortraitCard,
+        ))
+        .with_children(|portrait| {
+            portrait.spawn(TextBundle::from_section(
+                "Retrato",
+                TextStyle {
+                    font_size: 18.0,
+                    color: Color::srgb_u8(222, 196, 156),
+                    ..default()
+                },
+            ));
+
+            portrait
+                .spawn(NodeBundle {
+                    style: Style {
+                        width: Val::Px(220.0),
+                        height: Val::Px(280.0),
+                        justify_content: JustifyContent::Center,
+                        align_items: AlignItems::Center,
+                        border: UiRect::all(Val::Px(2.0)),
+                        ..default()
+                    },
+                    background_color: BackgroundColor(Color::srgba_u8(18, 10, 6, 170)),
+                    border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
+                    ..default()
+                })
+                .with_children(|frame| {
+                    frame.spawn((
+                        ImageBundle {
+                            style: Style {
+                                width: Val::Px(200.0),
+                                height: Val::Px(240.0),
+                                ..default()
+                            },
+                            image: UiImage::new(portraits.warrior.clone()),
+                            ..default()
+                        },
+                        // PortraitImageNode,
+                    ));
+                });
+
+            portrait.spawn((
+                TextBundle::from_section(
+                    "",
+                    TextStyle {
+                        font_size: 17.0,
+                        color: Color::srgb_u8(252, 204, 118),
+                        ..default()
+                    },
+                ),
+                // PortraitClassText,
+            ));
+
+            portrait.spawn((
+                TextBundle::from_section(
+                    "",
+                    TextStyle {
+                        font_size: 13.0,
+                        color: Color::srgb_u8(152, 128, 102),
+                        ..default()
+                    },
+                ),
+                // PortraitStatusText,
+            ));
         });
 }
 
