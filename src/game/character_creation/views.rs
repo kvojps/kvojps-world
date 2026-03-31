@@ -68,6 +68,8 @@ fn _spawn_creation_form_column(creation_area: &mut ChildBuilder) {
 
             _spawn_selector_row(left, "Gênero");
             _spawn_selector_row(left, "Classe");
+
+            _spawn_creation_actions(left);
         });
 }
 
@@ -136,6 +138,35 @@ fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
                     selector_row_next_action_text_style(),
                 ));
             });
+        });
+}
+
+fn _spawn_creation_actions(left: &mut ChildBuilder) {
+    left.spawn((
+        NodeBundle {
+            style: creation_actions_container_style(),
+            ..default()
+        },
+        // CreationActionsRow,
+    ))
+    .with_children(|actions| {
+        _spawn_action_button(actions, "Voltar ao Menu");
+        _spawn_action_button(actions, "Forjar Destino");
+    });
+}
+
+fn _spawn_action_button(parent: &mut ChildBuilder, label: &str) {
+    parent
+        .spawn((
+            ButtonBundle {
+                style: action_button_style(),
+                background_color: action_button_bg_style(),
+                ..default()
+            },
+            // action,
+        ))
+        .with_children(|button| {
+            button.spawn(TextBundle::from_section(label, action_button_text_style()));
         });
 }
 

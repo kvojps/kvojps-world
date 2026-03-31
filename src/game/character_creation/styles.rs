@@ -166,3 +166,36 @@ pub(super) fn selector_row_next_action_text_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn creation_actions_container_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        flex_direction: FlexDirection::Row,
+        column_gap: Val::Px(10.0),
+        row_gap: Val::Px(10.0),
+        margin: UiRect::top(Val::Px(8.0)),
+        ..default()
+    }
+}
+
+pub(super) fn action_button_style() -> Style {
+    Style {
+        width: Val::Px(180.0),
+        height: Val::Px(34.0),
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        ..default()
+    }
+}
+
+pub(super) fn action_button_bg_style() -> BackgroundColor {
+    BackgroundColor(Color::srgba_u8(92, 56, 32, 240))
+}
+
+pub(super) fn action_button_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 15.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}
