@@ -48,3 +48,51 @@ pub(super) fn character_creation_area_bg_color() -> BackgroundColor {
 pub(super) fn character_creation_area_border_color() -> BorderColor {
     BorderColor(Color::srgb_u8(150, 106, 64))
 }
+
+pub(super) fn character_area_creation_area_row_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        flex_direction: FlexDirection::Row,
+        align_items: AlignItems::FlexStart,
+        justify_content: JustifyContent::SpaceBetween,
+        column_gap: Val::Px(24.0),
+        ..default()
+    }
+}
+
+pub(super) fn character_area_creation_form_column_style() -> Style {
+    Style {
+        flex_grow: 1.0,
+        min_width: Val::Px(280.0),
+        flex_direction: FlexDirection::Column,
+        row_gap: Val::Px(8.0),
+        ..default()
+    }
+}
+
+pub(super) fn character_title_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}
+
+pub(super) fn character_name_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        height: Val::Px(38.0),
+        padding: UiRect::horizontal(Val::Px(10.0)),
+        justify_content: JustifyContent::FlexStart,
+        align_items: AlignItems::Center,
+        ..default()
+    }
+}
+
+pub(super) fn character_name_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 16.0,
+        color: Color::srgb_u8(196, 170, 136),
+        ..default()
+    }
+}
