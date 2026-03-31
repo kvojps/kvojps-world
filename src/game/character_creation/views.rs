@@ -65,6 +65,9 @@ fn _spawn_creation_form_column(creation_area: &mut ChildBuilder) {
             ));
 
             _spawn_creation_name_input(left);
+
+            _spawn_selector_row(left, "Gênero");
+            _spawn_selector_row(left, "Classe");
         });
 }
 
@@ -85,6 +88,55 @@ fn _spawn_creation_name_input(left: &mut ChildBuilder) {
             // NameValueText,
         ));
     });
+}
+
+fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
+    parent.spawn(TextBundle::from_section(
+        label,
+        selector_row_title_text_style(),
+    ));
+
+    parent
+        .spawn(NodeBundle {
+            style: selector_row_style(),
+            ..default()
+        })
+        .with_children(|row| {
+            row.spawn((
+                ButtonBundle {
+                    style: selector_row_prev_action_style(),
+                    background_color: selector_row_prev_action_bg_style(),
+                    ..default()
+                },
+                // prev_action,
+            ))
+            .with_children(|button| {
+                button.spawn(TextBundle::from_section(
+                    "<",
+                    selector_row_prev_action_text_style(),
+                ));
+            });
+
+            row.spawn((
+                TextBundle::from_section("", selector_row_marker_text_style()),
+                // marker,
+            ));
+
+            row.spawn((
+                ButtonBundle {
+                    style: selector_row_next_action_style(),
+                    background_color: selector_row_next_action_bg_style(),
+                    ..default()
+                },
+                // next_action,
+            ))
+            .with_children(|button| {
+                button.spawn(TextBundle::from_section(
+                    ">",
+                    selector_row_next_action_text_style(),
+                ));
+            });
+        });
 }
 
 pub(super) fn cleanup_character_creation(

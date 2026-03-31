@@ -96,3 +96,73 @@ pub(super) fn character_name_text_style() -> TextStyle {
         ..default()
     }
 }
+
+pub(super) fn selector_row_title_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_style() -> Style {
+    Style {
+        width: Val::Percent(100.0),
+        align_items: AlignItems::Center,
+        justify_content: JustifyContent::SpaceBetween,
+        column_gap: Val::Px(8.0),
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_prev_action_style() -> Style {
+    Style {
+        width: Val::Px(36.0),
+        height: Val::Px(32.0),
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_prev_action_bg_style() -> BackgroundColor {
+    BackgroundColor(Color::srgba_u8(60, 38, 25, 230))
+}
+
+pub(super) fn selector_row_prev_action_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_marker_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 16.0,
+        color: Color::srgb_u8(196, 170, 136),
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_next_action_style() -> Style {
+    Style {
+        width: Val::Px(36.0),
+        height: Val::Px(32.0),
+        justify_content: JustifyContent::Center,
+        align_items: AlignItems::Center,
+        ..default()
+    }
+}
+
+pub(super) fn selector_row_next_action_bg_style() -> BackgroundColor {
+    BackgroundColor(Color::srgba_u8(60, 38, 25, 230))
+}
+
+pub(super) fn selector_row_next_action_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(222, 196, 156),
+        ..default()
+    }
+}
