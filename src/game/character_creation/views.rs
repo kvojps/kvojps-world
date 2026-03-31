@@ -5,9 +5,13 @@ use bevy::prelude::*;
 
 pub(super) fn setup_character_creation(
     mut commands: Commands,
+    mut state: ResMut<CharacterCreationState>,
     mut portraits: ResMut<CharacterPortraitCatalog>,
     asset_server: Res<AssetServer>,
 ) {
+    state.error_text = None;
+    state.name_input_active = false;
+
     portraits.warrior = asset_server.load("portraits/warrior.png");
     portraits.ranger = asset_server.load("portraits/ranger.png");
     portraits.mage = asset_server.load("portraits/mage.png");
@@ -94,13 +98,13 @@ fn _spawn_creation_name_input(left: &mut ChildBuilder) {
             border_color: BorderColor(Color::srgb_u8(150, 106, 64)),
             ..default()
         },
-        // CreationButtonAction::NameInput,
-        // NameInputButton,
+        CreationButtonAction::NameInput,
+        NameInputButton,
     ))
     .with_children(|name_button| {
         name_button.spawn((
             TextBundle::from_section("", character_name_text_style()),
-            // NameValueText,
+            NameInputValue,
         ));
     });
 }

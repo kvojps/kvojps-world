@@ -97,6 +97,14 @@ pub(super) fn character_name_text_style() -> TextStyle {
     }
 }
 
+pub(super) fn character_name_active_bg_color() -> Color {
+    Color::srgba_u8(94, 58, 36, 245)
+}
+
+pub(super) fn character_name_inactive_bg_color() -> Color {
+    Color::srgba_u8(18, 12, 8, 220)
+}
+
 pub(super) fn selector_row_title_text_style() -> TextStyle {
     TextStyle {
         font_size: 18.0,
