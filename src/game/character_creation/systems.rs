@@ -9,7 +9,10 @@ use bevy::prelude::*;
 
 pub(super) fn sync_character_creation_ui(
     state: Res<CharacterCreationState>,
-    mut text_query: Query<&mut Text, With<NameInputValue>>,
+    mut text_queries: ParamSet<(
+        Query<&mut Text, With<NameInputValue>>,
+        Query<&mut Text, With<GenderInputValue>>,
+    )>,
     mut name_field_bg_query: Query<&mut BackgroundColor, With<NameInputButton>>,
 ) {
     let name_display = if state.character_name.is_empty() {
@@ -24,7 +27,7 @@ pub(super) fn sync_character_creation_ui(
         state.character_name.clone()
     };
 
-    if let Ok(mut text) = text_query.get_single_mut() {
+    if let Ok(mut text) = text_queries.p0().get_single_mut() {
         text.sections[0].value = name_display;
     }
 
@@ -34,6 +37,10 @@ pub(super) fn sync_character_creation_ui(
         } else {
             character_name_inactive_bg_color()
         };
+    }
+
+    if let Ok(mut text) = text_queries.p1().get_single_mut() {
+        text.sections[0].value = CHARACTER_GENDERS[state.selected_gender].to_string();
     }
 }
 
@@ -52,6 +59,18 @@ pub(super) fn handle_character_creation_interactions(
         match action {
             CreationButtonAction::NameInput => {
                 state.name_input_active = true;
+            }
+            CreationButtonAction::GenderPrev => {
+                state.name_input_active = false;
+                state.selected_gender = if state.selected_gender == 0 {
+                    CHARACTER_GENDERS.len() - 1
+                } else {
+                    state.selected_gender - 1
+                };
+            }
+            CreationButtonAction::GenderNext => {
+                state.name_input_active = false;
+                state.selected_gender = (state.selected_gender + 1) % CHARACTER_GENDERS.len();
             }
         }
     }

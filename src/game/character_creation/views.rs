@@ -9,6 +9,7 @@ pub(super) fn setup_character_creation(
     mut portraits: ResMut<CharacterPortraitCatalog>,
     asset_server: Res<AssetServer>,
 ) {
+    state.selected_gender = 0;
     state.error_text = None;
     state.name_input_active = false;
 
@@ -83,8 +84,20 @@ fn _spawn_creation_form_column(creation_area: &mut ChildBuilder) {
 
             _spawn_creation_name_input(left);
 
-            _spawn_selector_row(left, "Gênero");
-            _spawn_selector_row(left, "Classe");
+            _spawn_selector_row(
+                left,
+                "Gênero",
+                CreationButtonAction::GenderPrev,
+                CreationButtonAction::GenderNext,
+                GenderInputValue,
+            );
+            // _spawn_selector_row(
+            //     left,
+            //     "Classe",
+            //     CreationButtonAction::GenderPrev, //TODO: ClassPrev
+            //     CreationButtonAction::GenderNext, //TODO: ClassNext
+            //     GenderInputValue,                 //TODO: ClassValueText
+            // );
 
             _spawn_creation_actions(left);
         });
@@ -109,7 +122,13 @@ fn _spawn_creation_name_input(left: &mut ChildBuilder) {
     });
 }
 
-fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
+fn _spawn_selector_row<T: Component>(
+    parent: &mut ChildBuilder,
+    label: &str,
+    prev_action: CreationButtonAction,
+    next_action: CreationButtonAction,
+    marker: T,
+) {
     parent.spawn(TextBundle::from_section(
         label,
         selector_row_title_text_style(),
@@ -127,7 +146,7 @@ fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
                     background_color: selector_row_prev_action_bg_style(),
                     ..default()
                 },
-                // prev_action,
+                prev_action,
             ))
             .with_children(|button| {
                 button.spawn(TextBundle::from_section(
@@ -138,7 +157,7 @@ fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
 
             row.spawn((
                 TextBundle::from_section("", selector_row_marker_text_style()),
-                // marker,
+                marker,
             ));
 
             row.spawn((
@@ -147,7 +166,7 @@ fn _spawn_selector_row(parent: &mut ChildBuilder, label: &str) {
                     background_color: selector_row_next_action_bg_style(),
                     ..default()
                 },
-                // next_action,
+                next_action,
             ))
             .with_children(|button| {
                 button.spawn(TextBundle::from_section(
