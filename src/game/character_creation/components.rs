@@ -7,8 +7,8 @@ pub(super) const CHARACTER_GENDERS: [&str; 2] = ["Masculino", "Feminino"];
 pub(super) const CHARACTER_CLASSES: [&str; 4] = ["Guerreiro", "Ranger", "Mago", "Clérigo"];
 #[derive(Component, Clone, Copy)]
 pub(super) enum CreationButtonAction {
-    // Back,
-    // Begin,
+    Back,
+    Begin,
     NameInput,
     GenderPrev,
     GenderNext,

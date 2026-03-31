@@ -1,6 +1,7 @@
 use super::components::*;
 use super::states::*;
 use super::styles::{character_name_active_bg_color, character_name_inactive_bg_color};
+use crate::game::states::AppScreen;
 use bevy::input::{
     ButtonState,
     keyboard::{Key, KeyboardInput},
@@ -55,6 +56,7 @@ pub(super) fn handle_character_creation_interactions(
         (Changed<Interaction>, With<Button>),
     >,
     mut state: ResMut<CharacterCreationState>,
+    mut next_screen: ResMut<NextState<AppScreen>>,
 ) {
     for (interaction, action) in &mut interactions {
         if *interaction != Interaction::Pressed {
@@ -62,6 +64,20 @@ pub(super) fn handle_character_creation_interactions(
         }
 
         match action {
+            CreationButtonAction::Back => {
+                state.error_text = None;
+                state.name_input_active = false;
+                next_screen.set(AppScreen::MainMenu);
+            }
+            CreationButtonAction::Begin => {
+                state.name_input_active = false;
+                if state.character_name.trim().is_empty() {
+                    state.error_text = Some("Informe um nome para iniciar a jornada.".to_string());
+                } else {
+                    state.error_text = None;
+                    next_screen.set(AppScreen::MainMenu); //TODO: Change to Overworld when implemented
+                }
+            }
             CreationButtonAction::NameInput => {
                 state.name_input_active = true;
             }

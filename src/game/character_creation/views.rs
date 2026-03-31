@@ -179,20 +179,17 @@ fn _spawn_selector_row<T: Component>(
 }
 
 fn _spawn_creation_actions(left: &mut ChildBuilder) {
-    left.spawn((
-        NodeBundle {
-            style: creation_actions_container_style(),
-            ..default()
-        },
-        // CreationActionsRow,
-    ))
-    .with_children(|actions| {
-        _spawn_action_button(actions, "Voltar ao Menu");
-        _spawn_action_button(actions, "Forjar Destino");
-    });
+    left.spawn((NodeBundle {
+        style: creation_actions_container_style(),
+        ..default()
+    },))
+        .with_children(|actions| {
+            _spawn_action_button(actions, "Voltar ao Menu", CreationButtonAction::Back);
+            _spawn_action_button(actions, "Forjar Destino", CreationButtonAction::Begin);
+        });
 }
 
-fn _spawn_action_button(parent: &mut ChildBuilder, label: &str) {
+fn _spawn_action_button(parent: &mut ChildBuilder, label: &str, action: CreationButtonAction) {
     parent
         .spawn((
             ButtonBundle {
@@ -200,7 +197,7 @@ fn _spawn_action_button(parent: &mut ChildBuilder, label: &str) {
                 background_color: action_button_bg_style(),
                 ..default()
             },
-            // action,
+            action,
         ))
         .with_children(|button| {
             button.spawn(TextBundle::from_section(label, action_button_text_style()));
