@@ -9,4 +9,3 @@ path = "main.rs"
 
 [dependencies]
 bevy = "0.14"
-bevy_egui = "0.28"
