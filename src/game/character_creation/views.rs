@@ -225,7 +225,7 @@ fn _spawn_creation_portrait_column(
                 },
                 ..default()
             },
-            // CreationPortraitCard,
+            PortraitCard,
         ))
         .with_children(|portrait| {
             portrait.spawn(TextBundle::from_section(
@@ -262,7 +262,7 @@ fn _spawn_creation_portrait_column(
                             image: UiImage::new(portraits.warrior.clone()),
                             ..default()
                         },
-                        // PortraitImageNode,
+                        PortraitImageNode,
                     ));
                 });
 
@@ -275,7 +275,7 @@ fn _spawn_creation_portrait_column(
                         ..default()
                     },
                 ),
-                // PortraitClassText,
+                PortraitClassText,
             ));
 
             portrait.spawn((
@@ -287,7 +287,7 @@ fn _spawn_creation_portrait_column(
                         ..default()
                     },
                 ),
-                // PortraitStatusText,
+                PortraitStatusText,
             ));
         });
 }

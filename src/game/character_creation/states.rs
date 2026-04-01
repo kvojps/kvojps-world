@@ -17,4 +17,13 @@ pub struct CharacterPortraitCatalog {
     pub cleric: Handle<Image>,
 }
 
-impl CharacterPortraitCatalog {}
+impl CharacterPortraitCatalog {
+    pub fn handle_for_class(&self, class_index: usize) -> &Handle<Image> {
+        match class_index {
+            0 => &self.warrior,
+            1 => &self.ranger,
+            2 => &self.mage,
+            _ => &self.cleric,
+        }
+    }
+}

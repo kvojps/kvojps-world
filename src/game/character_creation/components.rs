@@ -30,3 +30,15 @@ pub(super) struct ClassInputValue;
 
 #[derive(Component)]
 pub(super) struct ErrorLabel;
+
+#[derive(Component)]
+pub(super) struct PortraitCard;
+
+#[derive(Component)]
+pub(super) struct PortraitImageNode;
+
+#[derive(Component)]
+pub(super) struct PortraitClassText;
+
+#[derive(Component)]
+pub(super) struct PortraitStatusText;

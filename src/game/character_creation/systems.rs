@@ -10,12 +10,14 @@ use bevy::prelude::*;
 
 pub(super) fn sync_character_creation_ui(
     state: Res<CharacterCreationState>,
+    portraits: Res<CharacterPortraitCatalog>,
     mut text_queries: ParamSet<(
         Query<&mut Text, With<NameInputValue>>,
         Query<&mut Text, With<GenderInputValue>>,
         Query<&mut Text, With<ClassInputValue>>,
         Query<&mut Text, With<ErrorLabel>>,
     )>,
+    mut portrait_image_query: Query<&mut UiImage, With<PortraitImageNode>>,
     mut name_field_bg_query: Query<&mut BackgroundColor, With<NameInputButton>>,
 ) {
     let name_display = if state.character_name.is_empty() {
@@ -52,6 +54,13 @@ pub(super) fn sync_character_creation_ui(
 
     if let Ok(mut text) = text_queries.p3().get_single_mut() {
         text.sections[0].value = state.error_text.clone().unwrap_or_default();
+    }
+
+    let selected_portrait = portraits
+        .handle_for_class(state.selected_class)
+        .clone_weak();
+    if let Ok(mut image) = portrait_image_query.get_single_mut() {
+        image.texture = selected_portrait.clone();
     }
 }
 
