@@ -27,3 +27,6 @@ pub(super) struct GenderInputValue;
 
 #[derive(Component)]
 pub(super) struct ClassInputValue;
+
+#[derive(Component)]
+pub(super) struct ErrorLabel;

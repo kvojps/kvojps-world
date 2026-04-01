@@ -186,6 +186,14 @@ pub(super) fn creation_actions_container_style() -> Style {
     }
 }
 
+pub(super) fn error_label_text_style() -> TextStyle {
+    TextStyle {
+        font_size: 14.0,
+        color: Color::srgb_u8(240, 130, 110),
+        ..default()
+    }
+}
+
 pub(super) fn action_button_style() -> Style {
     Style {
         width: Val::Px(180.0),

@@ -100,6 +100,11 @@ fn _spawn_creation_form_column(creation_area: &mut ChildBuilder) {
                 ClassInputValue,
             );
 
+            left.spawn((
+                TextBundle::from_section("", error_label_text_style()),
+                ErrorLabel,
+            ));
+
             _spawn_creation_actions(left);
         });
 }

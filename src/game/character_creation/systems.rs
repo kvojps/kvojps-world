@@ -14,6 +14,7 @@ pub(super) fn sync_character_creation_ui(
         Query<&mut Text, With<NameInputValue>>,
         Query<&mut Text, With<GenderInputValue>>,
         Query<&mut Text, With<ClassInputValue>>,
+        Query<&mut Text, With<ErrorLabel>>,
     )>,
     mut name_field_bg_query: Query<&mut BackgroundColor, With<NameInputButton>>,
 ) {
@@ -47,6 +48,10 @@ pub(super) fn sync_character_creation_ui(
 
     if let Ok(mut text) = text_queries.p2().get_single_mut() {
         text.sections[0].value = CHARACTER_CLASSES[state.selected_class].to_string();
+    }
+
+    if let Ok(mut text) = text_queries.p3().get_single_mut() {
+        text.sections[0].value = state.error_text.clone().unwrap_or_default();
     }
 }
 
