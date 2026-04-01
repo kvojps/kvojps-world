@@ -5,5 +5,4 @@ pub enum AppScreen {
     #[default]
     MainMenu,
     CharacterCreation,
-    Overworld,
 }

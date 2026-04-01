@@ -1,17 +1,15 @@
 use bevy::app::AppExit;
 use bevy::prelude::*;
-
 use crate::game::character_creation::CharacterCreationPlugin;
 use crate::game::main_menu::MainMenuPlugin;
 use crate::game::states::AppScreen;
-use crate::game::world::overworld::OverworldPlugin;
 
 pub struct GamePlugin;
 
 impl Plugin for GamePlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<AppScreen>()
-            .add_plugins((MainMenuPlugin, CharacterCreationPlugin, OverworldPlugin))
+            .add_plugins((MainMenuPlugin, CharacterCreationPlugin))
             .add_systems(Startup, spawn_camera)
             .add_systems(Update, close_on_alt_f4);
     }
