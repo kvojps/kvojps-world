@@ -27,6 +27,22 @@ pub(super) fn header_container_style() -> Style {
     }
 }
 
+pub(super) fn header_title_style() -> TextStyle {
+    TextStyle {
+        font_size: 56.0,
+        color: Color::srgb_u8(236, 192, 112),
+        ..default()
+    }
+}
+
+pub(super) fn header_subtitle_style() -> TextStyle {
+    TextStyle {
+        font_size: 18.0,
+        color: Color::srgb_u8(188, 160, 126),
+        ..default()
+    }
+}
+
 pub(super) fn menu_panel_container_style() -> Style {
     Style {
         width: Val::Px(460.0),

@@ -1,7 +1,6 @@
 use super::components::*;
 use super::states::MainMenuState;
 use super::styles::*;
-use crate::themes::*;
 use bevy::prelude::*;
 
 pub(super) fn setup_main_menu(mut commands: Commands, mut state: ResMut<MainMenuState>) {
@@ -30,10 +29,13 @@ fn _spawn_header(root: &mut ChildBuilder) {
         ..default()
     })
     .with_children(|header| {
-        header.spawn(TextBundle::from_section("Kvojps World", title_style()));
+        header.spawn(TextBundle::from_section(
+            "Kvojps World",
+            header_title_style(),
+        ));
         header.spawn(TextBundle::from_section(
             "Uma aventura RPG de sobrevivência e exploracão",
-            subtitle_style(),
+            header_subtitle_style(),
         ));
     });
 }

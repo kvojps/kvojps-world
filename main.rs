@@ -1,4 +1,3 @@
-mod themes;
 mod game;
 
 fn main() {
