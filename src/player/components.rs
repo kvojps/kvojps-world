@@ -103,7 +103,7 @@ impl PlayerAnimation {
 }
 
 #[derive(Resource)]
-pub struct PendingPlayerSheet {
+pub struct PlayerSetup {
     pub idle_image: Handle<Image>,
     pub walk_image: Handle<Image>,
     pub spawned: bool,
