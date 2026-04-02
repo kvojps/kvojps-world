@@ -1,7 +1,7 @@
-use bevy::prelude::*;
 pub mod components;
 pub mod systems;
 
+use bevy::prelude::*;
 use components::Player;
 use systems::player_movement;
 
