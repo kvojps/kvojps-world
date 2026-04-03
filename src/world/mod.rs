@@ -1,10 +1,12 @@
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
+use serde_json::Value;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 const TILE_SIZE: f32 = 16.0;
 const TILE_SCALE: f32 = 2.0;
+const MAP_EDITOR_FILE_PATH: &str = "assets/world/map.tmj";
 const MAP_FILE_PATH: &str = "assets/world/map.txt";
 const FALLBACK_MAP_MATRIX: &[&str] = &[
     "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
@@ -137,7 +139,22 @@ fn spawn_main_tilemap(
 }
 
 fn load_map_rows() -> Vec<Vec<char>> {
-    for path in map_file_candidates() {
+    for path in editor_map_file_candidates() {
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+
+        let Some(rows) = parse_tiled_rows(&content) else {
+            continue;
+        };
+
+        if !rows.is_empty() {
+            info!("Loaded world map (Tiled) from {}", path.display());
+            return rows;
+        }
+    }
+
+    for path in text_map_file_candidates() {
         let Ok(content) = fs::read_to_string(&path) else {
             continue;
         };
@@ -150,7 +167,8 @@ fn load_map_rows() -> Vec<Vec<char>> {
     }
 
     warn!(
-        "Could not load a valid map from {}. Using embedded fallback map.",
+        "Could not load a valid map from {} or {}. Using embedded fallback map.",
+        MAP_EDITOR_FILE_PATH,
         MAP_FILE_PATH
     );
 
@@ -160,7 +178,20 @@ fn load_map_rows() -> Vec<Vec<char>> {
         .collect()
 }
 
-fn map_file_candidates() -> Vec<PathBuf> {
+fn editor_map_file_candidates() -> Vec<PathBuf> {
+    let base = Path::new(MAP_EDITOR_FILE_PATH);
+    let mut candidates = vec![base.to_path_buf()];
+
+    if let Ok(cwd) = std::env::current_dir() {
+        candidates.push(cwd.join(base));
+        candidates.push(cwd.join("..\\assets\\world\\map.tmj"));
+        candidates.push(cwd.join("..\\..\\assets\\world\\map.tmj"));
+    }
+
+    candidates
+}
+
+fn text_map_file_candidates() -> Vec<PathBuf> {
     let base = Path::new(MAP_FILE_PATH);
     let mut candidates = vec![base.to_path_buf()];
 
@@ -171,6 +202,48 @@ fn map_file_candidates() -> Vec<PathBuf> {
     }
 
     candidates
+}
+
+fn parse_tiled_rows(content: &str) -> Option<Vec<Vec<char>>> {
+    let root: Value = serde_json::from_str(content).ok()?;
+
+    let width = root.get("width")?.as_u64()? as usize;
+    let height = root.get("height")?.as_u64()? as usize;
+    if width == 0 || height == 0 {
+        return None;
+    }
+
+    let layers = root.get("layers")?.as_array()?;
+    let tile_layer = layers
+        .iter()
+        .find(|layer| layer.get("type").and_then(Value::as_str) == Some("tilelayer"))?;
+
+    let data = tile_layer.get("data")?.as_array()?;
+    if data.len() != width * height {
+        return None;
+    }
+
+    let mut rows = Vec::with_capacity(height);
+    for y in 0..height {
+        let mut row = Vec::with_capacity(width);
+        for x in 0..width {
+            let raw_gid = data[y * width + x].as_u64().unwrap_or(0) as u32;
+            let gid = raw_gid & 0x1FFF_FFFF;
+            row.push(tile_from_tiled_gid(gid));
+        }
+        rows.push(row);
+    }
+
+    Some(rows)
+}
+
+fn tile_from_tiled_gid(gid: u32) -> char {
+    match gid {
+        1 => 'G',
+        2 => 'P',
+        3 => 'W',
+        _ => 'W',
+    }
 }
 
 fn parse_map_rows(content: &str) -> Vec<Vec<char>> {
