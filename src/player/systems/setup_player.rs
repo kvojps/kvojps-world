@@ -40,13 +40,13 @@ pub fn setup_player(
         ),
         Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
         Player,
-        animation,
         PlayerSpriteSheets {
             idle_image: player_setup.idle_image.clone(),
             idle_layout: idle_layout.layout,
             walk_image: player_setup.walk_image.clone(),
             walk_layout: walk_layout.layout,
         },
+        animation,
     ));
 
     player_setup.spawned = true;
