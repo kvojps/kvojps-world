@@ -1,8 +1,8 @@
 use super::components::{AnimationSet, Direction, Player, PlayerAnimation, PlayerSpriteSheets};
 use bevy::prelude::*;
 
-mod setup_player;
-pub use setup_player::{setup_player, setup_player_scene};
+mod setup;
+pub use setup::{setup_player, setup_player_scene};
 
 pub fn player_movement(
     keyboard: Res<ButtonInput<KeyCode>>,
