@@ -1,9 +1,41 @@
 use bevy::prelude::*;
+use bevy_ecs_tilemap::prelude::*;
+use std::fs;
+use std::path::{Path, PathBuf};
 
 const TILE_SIZE: f32 = 16.0;
 const TILE_SCALE: f32 = 2.0;
-const MAP_WIDTH: usize = 80;
-const MAP_HEIGHT: usize = 80;
+const MAP_FILE_PATH: &str = "assets/world/map.txt";
+const FALLBACK_MAP_MATRIX: &[&str] = &[
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGWWWWWWGGGGGGGGGGGGGGGGGGWWWWWWGGGGGGGGGW",
+    "WGGGGGGGGGWWWWWWGGGGGGGGGGGGGGGGGGWWWWWWGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPW",
+    "WPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGWWWWWWGGGGGGGGPPGGGGGGGGWWWWWWGGGGGGGGGW",
+    "WGGGGGGGGGWWWWWWGGGGGGGGPPGGGGGGGGWWWWWWGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGPPGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGW",
+    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+];
 
 pub struct WorldPlugin;
 
@@ -17,62 +49,172 @@ fn setup_world_map(mut commands: Commands, asset_server: Res<AssetServer>) {
     let grass = asset_server.load("world/grass.png");
     let path = asset_server.load("world/path.png");
     let water = asset_server.load("world/water.png");
+    let map_rows = load_map_rows();
 
-    let width = MAP_WIDTH as f32;
-    let height = MAP_HEIGHT as f32;
-    let tile_world_size = TILE_SIZE * TILE_SCALE;
+    let map_height = map_rows.len();
+    let map_width = map_rows.iter().map(|row| row.len()).max().unwrap_or(0);
 
-    let x_offset = -((width - 1.0) * tile_world_size) * 0.5;
-    let y_offset = ((height - 1.0) * tile_world_size) * 0.5;
+    if map_width == 0 || map_height == 0 {
+        error!("Map is empty after parsing. Tilemap will not be spawned.");
+        return;
+    }
 
-    for row in 0..MAP_HEIGHT {
-        for col in 0..MAP_WIDTH {
-            let texture = match tile_kind(row, col) {
-                TileKind::Grass => grass.clone(),
-                TileKind::Path => path.clone(),
-                TileKind::Water => water.clone(),
-            };
+    info!("Loaded map with size {}x{} tiles", map_width, map_height);
 
-            commands.spawn((
-                Sprite::from_image(texture),
-                Transform::from_xyz(
-                    x_offset + col as f32 * tile_world_size,
-                    y_offset - row as f32 * tile_world_size,
-                    -1.0,
-                )
-                .with_scale(Vec3::splat(TILE_SCALE)),
-            ));
+    spawn_tile_layer(
+        &mut commands,
+        &map_rows,
+        map_width,
+        map_height,
+        TILE_SIZE,
+        -1.0,
+        grass,
+        |tile| tile == 'G',
+    );
+    spawn_tile_layer(
+        &mut commands,
+        &map_rows,
+        map_width,
+        map_height,
+        TILE_SIZE,
+        -0.9,
+        path,
+        |tile| tile == 'P',
+    );
+    spawn_tile_layer(
+        &mut commands,
+        &map_rows,
+        map_width,
+        map_height,
+        TILE_SIZE,
+        -0.8,
+        water,
+        |tile| tile == 'W',
+    );
+}
+
+fn load_map_rows() -> Vec<Vec<char>> {
+    for path in map_file_candidates() {
+        let Ok(content) = fs::read_to_string(&path) else {
+            continue;
+        };
+
+        let rows = parse_map_rows(&content);
+        if !rows.is_empty() {
+            info!("Loaded world map from {}", path.display());
+            return rows;
         }
     }
+
+    warn!(
+        "Could not load a valid map from {}. Using embedded fallback map.",
+        MAP_FILE_PATH
+    );
+
+    FALLBACK_MAP_MATRIX
+        .iter()
+        .map(|line| line.chars().collect())
+        .collect()
 }
 
-#[derive(Clone, Copy)]
-enum TileKind {
-    Grass,
-    Path,
-    Water,
+fn map_file_candidates() -> Vec<PathBuf> {
+    let base = Path::new(MAP_FILE_PATH);
+    let mut candidates = vec![base.to_path_buf()];
+
+    if let Ok(cwd) = std::env::current_dir() {
+        candidates.push(cwd.join(base));
+        candidates.push(cwd.join("..\\assets\\world\\map.txt"));
+        candidates.push(cwd.join("..\\..\\assets\\world\\map.txt"));
+    }
+
+    candidates
 }
 
-fn tile_kind(row: usize, col: usize) -> TileKind {
-    let is_border = row == 0 || col == 0 || row == MAP_HEIGHT - 1 || col == MAP_WIDTH - 1;
-    if is_border {
-        return TileKind::Water;
+fn parse_map_rows(content: &str) -> Vec<Vec<char>> {
+    content
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(parse_map_line)
+        .filter(|row| !row.is_empty())
+        .collect()
+}
+
+fn parse_map_line(line: &str) -> Vec<char> {
+    line.chars()
+        .map(|ch| ch.to_ascii_uppercase())
+        .filter(|tile| !tile.is_whitespace())
+        .map(|tile| match tile {
+            'G' | 'P' | 'W' => tile,
+            _ => 'W',
+        })
+        .collect()
+}
+
+fn spawn_tile_layer<F>(
+    commands: &mut Commands,
+    map_rows: &[Vec<char>],
+    map_width: usize,
+    map_height: usize,
+    tile_size: f32,
+    z_layer: f32,
+    texture: Handle<Image>,
+    include_tile: F,
+) where
+    F: Fn(char) -> bool,
+{
+    let map_entity = commands.spawn_empty().id();
+
+    let map_size = TilemapSize {
+        x: map_width as u32,
+        y: map_height as u32,
+    };
+
+    let mut tile_storage = TileStorage::empty(map_size);
+
+    for y in 0..map_height {
+        for x in 0..map_width {
+            let tile = map_rows
+                .get(y)
+                .and_then(|row| row.get(x))
+                .copied()
+                .unwrap_or('W');
+            if !include_tile(tile) {
+                continue;
+            }
+
+            let position = TilePos {
+                x: x as u32,
+                y: y as u32,
+            };
+
+            let tile_entity = commands
+                .spawn(TileBundle {
+                    position,
+                    tilemap_id: TilemapId(map_entity),
+                    ..default()
+                })
+                .id();
+
+            tile_storage.set(&position, tile_entity);
+        }
     }
 
-    let center_row = MAP_HEIGHT / 2;
-    let center_col = MAP_WIDTH / 2;
-
-    let horizontal_road = row.abs_diff(center_row) <= 1;
-    let vertical_road = col.abs_diff(center_col) <= 1;
-
-    if horizontal_road || vertical_road {
-        return TileKind::Path;
-    }
-
-    let lake_band = row > MAP_HEIGHT / 4 && row < MAP_HEIGHT / 3 && col % 9 <= 1;
-    if lake_band {
-        return TileKind::Water;
-    }
-
-    TileKind::Grass
+    commands.entity(map_entity).insert(TilemapBundle {
+        grid_size: TilemapGridSize {
+            x: tile_size,
+            y: tile_size,
+        },
+        anchor: TilemapAnchor::Center,
+        map_type: TilemapType::Square,
+        size: map_size,
+        storage: tile_storage,
+        texture: TilemapTexture::Single(texture),
+        tile_size: TilemapTileSize {
+            x: tile_size,
+            y: tile_size,
+        },
+        transform: Transform::from_xyz(0.0, 0.0, z_layer).with_scale(Vec3::splat(TILE_SCALE)),
+        ..default()
+    });
 }
