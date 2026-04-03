@@ -1,5 +1,10 @@
 use bevy::prelude::*;
 
+pub const SPRITE_SIZE: UVec2 = UVec2::new(40, 48);
+pub const IDLE_FRAMES: usize = 4;
+pub const WALK_FRAMES: usize = 4;
+pub const PLAYER_SCALE: f32 = 2.0;
+
 #[derive(Component)]
 pub struct Player;
 
@@ -7,10 +12,20 @@ impl Player {
     pub const SPEED: f32 = 200.0;
 }
 
-pub const SPRITE_SIZE: UVec2 = UVec2::new(40, 48);
-pub const IDLE_FRAMES: usize = 4;
-pub const WALK_FRAMES: usize = 4;
-pub const PLAYER_SCALE: f32 = 2.0;
+#[derive(Resource)]
+pub struct PlayerSetup {
+    pub idle_image: Handle<Image>,
+    pub walk_image: Handle<Image>,
+    pub spawned: bool,
+}
+
+#[derive(Component)]
+pub struct PlayerSpriteSheets {
+    pub idle_image: Handle<Image>,
+    pub idle_layout: Handle<TextureAtlasLayout>,
+    pub walk_image: Handle<Image>,
+    pub walk_layout: Handle<TextureAtlasLayout>,
+}
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum Direction {
@@ -100,19 +115,4 @@ impl PlayerAnimation {
             self.timer.reset();
         }
     }
-}
-
-#[derive(Resource)]
-pub struct PlayerSetup {
-    pub idle_image: Handle<Image>,
-    pub walk_image: Handle<Image>,
-    pub spawned: bool,
-}
-
-#[derive(Component)]
-pub struct PlayerSpriteSheets {
-    pub idle_image: Handle<Image>,
-    pub idle_layout: Handle<TextureAtlasLayout>,
-    pub walk_image: Handle<Image>,
-    pub walk_layout: Handle<TextureAtlasLayout>,
 }
