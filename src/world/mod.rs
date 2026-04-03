@@ -49,6 +49,7 @@ fn setup_world_map(mut commands: Commands, asset_server: Res<AssetServer>) {
     let grass = asset_server.load("world/grass.png");
     let path = asset_server.load("world/path.png");
     let water = asset_server.load("world/water.png");
+    let terrain_textures = vec![grass, path, water];
     let map_rows = load_map_rows();
 
     let map_height = map_rows.len();
@@ -61,36 +62,78 @@ fn setup_world_map(mut commands: Commands, asset_server: Res<AssetServer>) {
 
     info!("Loaded map with size {}x{} tiles", map_width, map_height);
 
-    spawn_tile_layer(
+    spawn_main_tilemap(
         &mut commands,
         &map_rows,
         map_width,
         map_height,
         TILE_SIZE,
         -1.0,
-        grass,
-        |tile| tile == 'G',
+        terrain_textures,
     );
-    spawn_tile_layer(
-        &mut commands,
-        &map_rows,
-        map_width,
-        map_height,
-        TILE_SIZE,
-        -0.9,
-        path,
-        |tile| tile == 'P',
-    );
-    spawn_tile_layer(
-        &mut commands,
-        &map_rows,
-        map_width,
-        map_height,
-        TILE_SIZE,
-        -0.8,
-        water,
-        |tile| tile == 'W',
-    );
+}
+
+fn spawn_main_tilemap(
+    commands: &mut Commands,
+    map_rows: &[Vec<char>],
+    map_width: usize,
+    map_height: usize,
+    tile_size: f32,
+    z_layer: f32,
+    textures: Vec<Handle<Image>>,
+) {
+    let map_entity = commands.spawn_empty().id();
+
+    let map_size = TilemapSize {
+        x: map_width as u32,
+        y: map_height as u32,
+    };
+
+    let mut tile_storage = TileStorage::empty(map_size);
+
+    for y in 0..map_height {
+        for x in 0..map_width {
+            let tile = map_rows
+                .get(y)
+                .and_then(|row| row.get(x))
+                .copied()
+                .unwrap_or('W');
+
+            let position = TilePos {
+                x: x as u32,
+                y: y as u32,
+            };
+
+            let tile_entity = commands
+                .spawn(TileBundle {
+                    position,
+                    texture_index: TileTextureIndex(tile_texture_index(tile)),
+                    tilemap_id: TilemapId(map_entity),
+                    ..default()
+                })
+                .id();
+
+            tile_storage.set(&position, tile_entity);
+        }
+    }
+
+    commands.entity(map_entity).insert(TilemapBundle {
+        grid_size: TilemapGridSize {
+            x: tile_size,
+            y: tile_size,
+        },
+        anchor: TilemapAnchor::Center,
+        map_type: TilemapType::Square,
+        size: map_size,
+        storage: tile_storage,
+        texture: TilemapTexture::Vector(textures),
+        tile_size: TilemapTileSize {
+            x: tile_size,
+            y: tile_size,
+        },
+        transform: Transform::from_xyz(0.0, 0.0, z_layer).with_scale(Vec3::splat(TILE_SCALE)),
+        ..default()
+    });
 }
 
 fn load_map_rows() -> Vec<Vec<char>> {
@@ -151,70 +194,11 @@ fn parse_map_line(line: &str) -> Vec<char> {
         .collect()
 }
 
-fn spawn_tile_layer<F>(
-    commands: &mut Commands,
-    map_rows: &[Vec<char>],
-    map_width: usize,
-    map_height: usize,
-    tile_size: f32,
-    z_layer: f32,
-    texture: Handle<Image>,
-    include_tile: F,
-) where
-    F: Fn(char) -> bool,
-{
-    let map_entity = commands.spawn_empty().id();
-
-    let map_size = TilemapSize {
-        x: map_width as u32,
-        y: map_height as u32,
-    };
-
-    let mut tile_storage = TileStorage::empty(map_size);
-
-    for y in 0..map_height {
-        for x in 0..map_width {
-            let tile = map_rows
-                .get(y)
-                .and_then(|row| row.get(x))
-                .copied()
-                .unwrap_or('W');
-            if !include_tile(tile) {
-                continue;
-            }
-
-            let position = TilePos {
-                x: x as u32,
-                y: y as u32,
-            };
-
-            let tile_entity = commands
-                .spawn(TileBundle {
-                    position,
-                    tilemap_id: TilemapId(map_entity),
-                    ..default()
-                })
-                .id();
-
-            tile_storage.set(&position, tile_entity);
-        }
+fn tile_texture_index(tile: char) -> u32 {
+    match tile {
+        'G' => 0,
+        'P' => 1,
+        'W' => 2,
+        _ => 2,
     }
-
-    commands.entity(map_entity).insert(TilemapBundle {
-        grid_size: TilemapGridSize {
-            x: tile_size,
-            y: tile_size,
-        },
-        anchor: TilemapAnchor::Center,
-        map_type: TilemapType::Square,
-        size: map_size,
-        storage: tile_storage,
-        texture: TilemapTexture::Single(texture),
-        tile_size: TilemapTileSize {
-            x: tile_size,
-            y: tile_size,
-        },
-        transform: Transform::from_xyz(0.0, 0.0, z_layer).with_scale(Vec3::splat(TILE_SCALE)),
-        ..default()
-    });
 }
