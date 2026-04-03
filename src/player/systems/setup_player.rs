@@ -4,6 +4,15 @@ use crate::player::components::{
 };
 use bevy::prelude::*;
 
+pub fn setup_player_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2d);
+    commands.insert_resource(PlayerSetup {
+        idle_image: asset_server.load("player_idle.png"),
+        walk_image: asset_server.load("player_walk.png"),
+        spawned: false,
+    });
+}
+
 pub fn setup_player(
     mut commands: Commands,
     mut player_setup: ResMut<PlayerSetup>,

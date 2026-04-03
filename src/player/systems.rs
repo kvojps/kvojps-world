@@ -1,17 +1,8 @@
-use super::components::{AnimationSet, Direction, Player, PlayerSetup, PlayerAnimation, PlayerSpriteSheets};
+use super::components::{AnimationSet, Direction, Player, PlayerAnimation, PlayerSpriteSheets};
 use bevy::prelude::*;
 
 mod setup_player;
-pub use setup_player::setup_player;
-
-pub fn setup_camera_and_player_sheet(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.spawn(Camera2d);
-    commands.insert_resource(PlayerSetup {
-        idle_image: asset_server.load("player_idle.png"),
-        walk_image: asset_server.load("player_walk.png"),
-        spawned: false,
-    });
-}
+pub use setup_player::{setup_player, setup_player_scene};
 
 pub fn player_movement(
     keyboard: Res<ButtonInput<KeyCode>>,
