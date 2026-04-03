@@ -1,4 +1,5 @@
 pub mod components;
+pub mod entities;
 pub mod systems;
 
 use self::systems::{animate_player, movement_player, setup_player, setup_player_scene};

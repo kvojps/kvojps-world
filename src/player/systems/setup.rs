@@ -1,7 +1,7 @@
 use crate::player::components::{
-    IDLE_FRAMES, PLAYER_SCALE, Player, PlayerAnimation, PlayerSetup, PlayerSpriteSheets,
-    SPRITE_SIZE, WALK_FRAMES,
+    IDLE_FRAMES, PlayerAnimation, PlayerSetup, SPRITE_SIZE, WALK_FRAMES,
 };
+use crate::player::entities::PlayerBundle;
 use bevy::prelude::*;
 
 pub fn setup_player_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -39,22 +39,11 @@ pub fn setup_player(
         walk_layout.frame_count,
     );
 
-    commands.spawn((
-        Sprite::from_atlas_image(
-            player_setup.idle_image.clone(),
-            TextureAtlas {
-                layout: idle_layout.layout.clone(),
-                index: animation.atlas_index(),
-            },
-        ),
-        Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
-        Player,
-        PlayerSpriteSheets {
-            idle_image: player_setup.idle_image.clone(),
-            idle_layout: idle_layout.layout,
-            walk_image: player_setup.walk_image.clone(),
-            walk_layout: walk_layout.layout,
-        },
+    commands.spawn(PlayerBundle::new(
+        player_setup.idle_image.clone(),
+        idle_layout.layout.clone(),
+        player_setup.walk_image.clone(),
+        walk_layout.layout.clone(),
         animation,
     ));
 
