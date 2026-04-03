@@ -1,8 +1,8 @@
-use super::components::{
-    AnimationSet, Direction, IDLE_FRAMES, PLAYER_SCALE, Player, PlayerAnimation, PlayerSetup,
-    PlayerSpriteSheets, SPRITE_SIZE, WALK_FRAMES,
-};
+use super::components::{AnimationSet, Direction, Player, PlayerSetup, PlayerAnimation, PlayerSpriteSheets};
 use bevy::prelude::*;
+
+mod setup_player;
+pub use setup_player::setup_player;
 
 pub fn setup_camera_and_player_sheet(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2d);
@@ -11,87 +11,6 @@ pub fn setup_camera_and_player_sheet(mut commands: Commands, asset_server: Res<A
         walk_image: asset_server.load("player_walk.png"),
         spawned: false,
     });
-}
-
-pub fn setup_player(
-    mut commands: Commands,
-    mut player_setup: ResMut<PlayerSetup>,
-    images: Res<Assets<Image>>,
-    mut layouts: ResMut<Assets<TextureAtlasLayout>>,
-) {
-    // This is a fallback in case the player wasn't spawned during the startup phase.
-    if player_setup.spawned {
-        return;
-    }
-    let Some(idle_image) = images.get(&player_setup.idle_image) else {
-        return;
-    };
-    let Some(walk_image) = images.get(&player_setup.walk_image) else {
-        return;
-    };
-
-    // Calculate layout and frame info for both idle and walk sheets
-    let idle_layout = _get_layout(idle_image, IDLE_FRAMES, &mut layouts);
-    let walk_layout = _get_layout(walk_image, WALK_FRAMES, &mut layouts);
-    let animation = PlayerAnimation::new(
-        idle_layout.columns,
-        walk_layout.columns,
-        idle_layout.frame_count,
-        walk_layout.frame_count,
-    );
-
-    // Spawn the player entity with the idle sprite and animation components
-    commands.spawn((
-        Sprite::from_atlas_image(
-            player_setup.idle_image.clone(),
-            TextureAtlas {
-                layout: idle_layout.layout.clone(),
-                index: animation.atlas_index(),
-            },
-        ),
-        Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(PLAYER_SCALE)),
-        Player,
-        animation,
-        PlayerSpriteSheets {
-            idle_image: player_setup.idle_image.clone(),
-            idle_layout: idle_layout.layout.clone(),
-            walk_image: player_setup.walk_image.clone(),
-            walk_layout: walk_layout.layout.clone(),
-        },
-    ));
-
-    player_setup.spawned = true;
-}
-
-pub fn _get_layout(
-    image: &Image,
-    frames: usize,
-    layouts: &mut Assets<TextureAtlasLayout>,
-) -> AtlasLayoutInfo {
-    let size = image.texture_descriptor.size;
-    let columns = (size.width / SPRITE_SIZE.x).max(1) as usize;
-    let rows = (size.height / SPRITE_SIZE.y).max(1) as usize;
-    let frame_count = frames.min(columns);
-
-    let layout = layouts.add(TextureAtlasLayout::from_grid(
-        SPRITE_SIZE,
-        columns as u32,
-        rows as u32,
-        None,
-        None,
-    ));
-
-    AtlasLayoutInfo {
-        columns,
-        frame_count,
-        layout,
-    }
-}
-
-pub struct AtlasLayoutInfo {
-    pub columns: usize,
-    pub frame_count: usize,
-    pub layout: Handle<TextureAtlasLayout>,
 }
 
 pub fn player_movement(
