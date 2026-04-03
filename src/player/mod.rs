@@ -2,7 +2,7 @@ pub mod components;
 pub mod systems;
 
 use bevy::prelude::*;
-use systems::{animate_player, player_movement, setup_player_scene, setup_player};
+use systems::{animate_player, player_movement, setup_player, setup_player_scene};
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {

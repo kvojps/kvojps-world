@@ -83,7 +83,11 @@ impl PlayerAnimation {
         }
     }
 
-    pub fn active_columns(&self) -> usize {
+    pub fn atlas_index(&self) -> usize {
+        self.direction.row() * self._active_columns() + self.frame
+    }
+
+    pub fn _active_columns(&self) -> usize {
         match self.set {
             AnimationSet::Idle => self.idle_columns,
             AnimationSet::Walk => self.walk_columns,
@@ -95,10 +99,6 @@ impl PlayerAnimation {
             AnimationSet::Idle => self.idle_frame_count,
             AnimationSet::Walk => self.walk_frame_count,
         }
-    }
-
-    pub fn atlas_index(&self) -> usize {
-        self.direction.row() * self.active_columns() + self.frame
     }
 
     pub fn set_direction(&mut self, direction: Direction) {
