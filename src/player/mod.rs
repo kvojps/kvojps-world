@@ -2,13 +2,13 @@ pub mod components;
 pub mod systems;
 
 use bevy::prelude::*;
-use systems::{animate_player, player_movement, setup_player, setup_player_scene};
+use systems::{animate_player, movement_player, setup_player, setup_player_scene};
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_player_scene)
             .add_systems(Update, setup_player)
-            .add_systems(Update, (player_movement, animate_player).chain());
+            .add_systems(Update, (movement_player, animate_player).chain());
     }
 }
