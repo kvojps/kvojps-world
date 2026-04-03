@@ -12,6 +12,9 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, setup_player_scene)
             .add_systems(Update, setup_player)
-            .add_systems(Update, (movement_player, animate_player, follow_player_camera).chain());
+            .add_systems(
+                Update,
+                (movement_player, animate_player, follow_player_camera).chain(),
+            );
     }
 }
