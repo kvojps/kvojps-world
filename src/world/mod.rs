@@ -4,6 +4,8 @@ use serde_json::Value;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+pub mod systems;
+
 const TILE_SIZE: f32 = 16.0;
 const TILE_SCALE: f32 = 2.0;
 const MAP_EDITOR_FILE_PATH: &str = "assets/world/map.tmj";
