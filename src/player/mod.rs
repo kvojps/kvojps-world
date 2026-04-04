@@ -7,6 +7,7 @@ use self::systems::{
 };
 use bevy::prelude::*;
 
+#[derive(Clone, Copy)]
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
