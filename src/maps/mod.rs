@@ -7,7 +7,7 @@ pub mod systems;
 pub use components::MapConfig;
 
 use components::{ActiveMapKey, MapCatalog};
-use systems::{select_active_map, setup_map};
+use systems::{animate_map_tiles, select_active_map, setup_map};
 
 #[derive(Clone)]
 pub struct MapsPlugin {
@@ -28,6 +28,7 @@ impl Plugin for MapsPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(MapCatalog(self.configs.clone()))
             .insert_resource(ActiveMapKey(self.active_map_key))
-            .add_systems(Startup, (select_active_map, setup_map).chain());
+            .add_systems(Startup, (select_active_map, setup_map).chain())
+            .add_systems(Update, animate_map_tiles);
     }
 }
