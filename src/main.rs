@@ -26,7 +26,7 @@ fn main() {
             ],
         ],
     )
-    .with_animation_frame_seconds(0.12)];
+    .with_animation_frame_seconds(0.3)];
 
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
