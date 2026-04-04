@@ -1,4 +1,4 @@
-use crate::maps::{ActiveMap, ActiveMapKey, MapCatalog, MapConfig};
+use crate::maps::components::*;
 use bevy::prelude::*;
 use bevy_ecs_tilemap::prelude::*;
 use serde_json::Value;
@@ -20,16 +20,15 @@ pub fn select_active_map(
             active_map_key.0
         );
     };
-
     commands.insert_resource(ActiveMap { config });
 }
 
-pub fn setup_map_from_config(
+pub fn setup_map(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     active_map: Res<ActiveMap>,
 ) {
-    let map = load_map(active_map.config.file_path);
+    let map = _load_map(active_map.config.file_path);
     let textures: Vec<Handle<Image>> = active_map
         .config
         .texture_paths
@@ -37,15 +36,15 @@ pub fn setup_map_from_config(
         .map(|path| asset_server.load(*path))
         .collect();
 
-    spawn_tilemap(&mut commands, &map, &textures, &active_map.config);
+    _spawn_tilemap(&mut commands, &map, &textures, &active_map.config);
 }
 
-fn load_map(map_file_path: &str) -> Map {
+fn _load_map(map_file_path: &str) -> Map {
     let Ok(content) = fs::read_to_string(map_file_path) else {
         panic!("Failed to read map file at '{}'", map_file_path);
     };
 
-    let Some(map) = parse_map(&content) else {
+    let Some(map) = _parse_map(&content) else {
         panic!("Failed to parse map file at '{}'", map_file_path);
     };
 
@@ -58,7 +57,7 @@ struct Map {
     tiles: Vec<Vec<Option<u32>>>,
 }
 
-fn parse_map(content: &str) -> Option<Map> {
+fn _parse_map(content: &str) -> Option<Map> {
     let root: Value = serde_json::from_str(content).ok()?;
     let width = root.get("width")?.as_u64()? as usize;
     let height = root.get("height")?.as_u64()? as usize;
@@ -98,7 +97,12 @@ fn parse_map(content: &str) -> Option<Map> {
     })
 }
 
-fn spawn_tilemap(commands: &mut Commands, map: &Map, textures: &[Handle<Image>], config: &MapConfig) {
+fn _spawn_tilemap(
+    commands: &mut Commands,
+    map: &Map,
+    textures: &[Handle<Image>],
+    config: &MapConfig,
+) {
     let map_entity = commands.spawn_empty().id();
     let map_size = TilemapSize {
         x: map.width as u32,
@@ -111,7 +115,6 @@ fn spawn_tilemap(commands: &mut Commands, map: &Map, textures: &[Handle<Image>],
             let Some(texture_index) = map.tiles[y][x] else {
                 continue;
             };
-
             if texture_index as usize >= textures.len() {
                 panic!(
                     "Tile references texture index {} but only {} textures were provided",
@@ -124,7 +127,6 @@ fn spawn_tilemap(commands: &mut Commands, map: &Map, textures: &[Handle<Image>],
                 x: x as u32,
                 y: y as u32,
             };
-
             let tile_entity = commands
                 .spawn(TileBundle {
                     position,
