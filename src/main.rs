@@ -8,25 +8,27 @@ use maps::MapConfig;
 use player::PlayerPlugin;
 
 fn main() {
-    let map_configs = vec![MapConfig::new(
-        "main",
-        "assets/world/map.tmj",
-        vec![
-            vec!["world/grass.png"],
-            vec!["world/path.png"],
+    let map_configs = vec![
+        MapConfig::new(
+            "main",
+            "assets/maps/overworld.tmj",
             vec![
-                "world/water_row8_1.png",
-                "world/water_row8_2.png",
-                "world/water_row8_3.png",
-                "world/water_row8_4.png",
-                "world/water_row8_5.png",
-                "world/water_row8_6.png",
-                "world/water_row8_7.png",
-                "world/water_row8_8.png",
+                vec!["ground/grass.png"],
+                vec!["ground/path.png"],
+                vec![
+                    "ocean/frame_0.png",
+                    "ocean/frame_1.png",
+                    "ocean/frame_2.png",
+                    "ocean/frame_3.png",
+                    "ocean/frame_4.png",
+                    "ocean/frame_5.png",
+                    "ocean/frame_6.png",
+                    "ocean/frame_7.png",
+                ],
             ],
-        ],
-    )
-    .with_animation_frame_seconds(0.3)];
+        )
+        .with_animation_frame_seconds(0.3),
+    ];
 
     App::new()
         .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
