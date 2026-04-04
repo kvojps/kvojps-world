@@ -44,44 +44,6 @@ pub fn setup_map(
     _spawn_tilemap(&mut commands, &map, &textures, &active_map.config);
 }
 
-pub fn animate_map_tiles(
-    time: Res<Time>,
-    active_map: Option<Res<ActiveMap>>,
-    mut frame_timer: Local<Option<Timer>>,
-    mut current_frame: Local<u32>,
-    mut tiles: Query<(&MapAnimatedTile, &mut TileTextureIndex)>,
-) {
-    let Some(active_map) = active_map else {
-        return;
-    };
-    let has_animated_tiles = active_map
-        .config
-        .texture_paths
-        .iter()
-        .any(|group| group.len() > 1);
-    if !has_animated_tiles {
-        return;
-    }
-
-    let timer = frame_timer.get_or_insert_with(|| {
-        Timer::from_seconds(
-            active_map.config.animation_frame_seconds.max(0.01),
-            TimerMode::Repeating,
-        )
-    });
-    timer.tick(time.delta());
-
-    if !timer.just_finished() {
-        return;
-    }
-
-    *current_frame += 1;
-    for (animated, mut texture_index) in &mut tiles {
-        let frame_offset = *current_frame % animated.frame_count;
-        *texture_index = TileTextureIndex(animated.start_index + frame_offset);
-    }
-}
-
 fn _load_map(map_file_path: &str) -> Map {
     let Ok(content) = fs::read_to_string(map_file_path) else {
         panic!("Failed to read map file at '{}'", map_file_path);
@@ -188,11 +150,11 @@ fn _spawn_tilemap(
                 y: y as u32,
             };
             let mut tile_commands = commands.spawn(TileBundle {
-                    position,
-                    texture_index: TileTextureIndex(mapped_texture_index),
-                    tilemap_id: TilemapId(map_entity),
-                    ..default()
-                });
+                position,
+                texture_index: TileTextureIndex(mapped_texture_index),
+                tilemap_id: TilemapId(map_entity),
+                ..default()
+            });
 
             if texture_group.len() > 1 {
                 tile_commands.insert(MapAnimatedTile {
@@ -215,4 +177,42 @@ fn _spawn_tilemap(
         textures,
         config,
     );
+}
+
+pub fn animate_map_tiles(
+    time: Res<Time>,
+    active_map: Option<Res<ActiveMap>>,
+    mut frame_timer: Local<Option<Timer>>,
+    mut current_frame: Local<u32>,
+    mut tiles: Query<(&MapAnimatedTile, &mut TileTextureIndex)>,
+) {
+    let Some(active_map) = active_map else {
+        return;
+    };
+    let has_animated_tiles = active_map
+        .config
+        .texture_paths
+        .iter()
+        .any(|group| group.len() > 1);
+    if !has_animated_tiles {
+        return;
+    }
+
+    let timer = frame_timer.get_or_insert_with(|| {
+        Timer::from_seconds(
+            active_map.config.animation_frame_seconds.max(0.01),
+            TimerMode::Repeating,
+        )
+    });
+    timer.tick(time.delta());
+
+    if !timer.just_finished() {
+        return;
+    }
+
+    *current_frame += 1;
+    for (animated, mut texture_index) in &mut tiles {
+        let frame_offset = *current_frame % animated.frame_count;
+        *texture_index = TileTextureIndex(animated.start_index + frame_offset);
+    }
 }
