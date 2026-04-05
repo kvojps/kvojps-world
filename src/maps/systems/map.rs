@@ -1,8 +1,6 @@
-use super::background::spawn_map_background;
 use crate::maps::components::*;
 use crate::maps::entitites::MapBundle;
 use bevy::prelude::*;
-use bevy::window::PrimaryWindow;
 use bevy_ecs_tilemap::prelude::*;
 use serde_json::Value;
 use std::fs;
@@ -30,7 +28,6 @@ pub fn setup_map(
 	mut commands: Commands,
 	asset_server: Res<AssetServer>,
 	active_map: Res<ActiveMap>,
-	windows: Query<&Window, With<PrimaryWindow>>,
 ) {
 	let map = _load_map(active_map.config.file_path);
 	let mut textures: Vec<Handle<Image>> = Vec::new();
@@ -43,8 +40,6 @@ pub fn setup_map(
 			textures.push(asset_server.load(*texture_path));
 		}
 	}
-
-	spawn_map_background(&mut commands, &asset_server, &windows, &active_map.config);
 
 	_spawn_tilemap(&mut commands, &map, &textures, &active_map.config);
 }
