@@ -7,7 +7,10 @@ pub mod systems;
 pub use components::MapConfig;
 
 use components::{ActiveMapKey, MapCatalog};
-use systems::{animate_map_tiles, select_active_map, setup_map};
+use self::systems::{
+    animate_map_background_tiles, animate_map_tiles, select_active_map, setup_map,
+    sync_map_background_tilemap,
+};
 
 #[derive(Clone)]
 pub struct MapsPlugin {
@@ -29,6 +32,7 @@ impl Plugin for MapsPlugin {
         app.insert_resource(MapCatalog(self.configs.clone()))
             .insert_resource(ActiveMapKey(self.active_map_key))
             .add_systems(Startup, (select_active_map, setup_map).chain())
-            .add_systems(Update, animate_map_tiles);
+            .add_systems(Update, (animate_map_tiles, animate_map_background_tiles))
+            .add_systems(PostUpdate, sync_map_background_tilemap);
     }
 }

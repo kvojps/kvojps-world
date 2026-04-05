@@ -16,7 +16,11 @@ impl<P> GamePlugin<P>
 where
     P: Plugin + Clone,
 {
-    pub fn new(player_plugin: P, map_configs: Vec<MapConfig>, active_map_key: &'static str) -> Self {
+    pub fn new(
+        player_plugin: P,
+        map_configs: Vec<MapConfig>,
+        active_map_key: &'static str,
+    ) -> Self {
         Self {
             player_plugin,
             map_configs,
